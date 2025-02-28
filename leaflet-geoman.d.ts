@@ -8,6 +8,8 @@ declare module 'leaflet' {
   interface LayerOptions {
     pmIgnore?: boolean;
     snapIgnore?: boolean;
+    /** Layers can be excluded from splitting with splitMark: false and splitOnlyMarkedLayers: false. Or included with splitMark: true and splitOnlyMarkedLayers: true. ⭐ */
+    splitMark?: boolean;
   }
 
   /**
@@ -50,6 +52,9 @@ declare module 'leaflet' {
   interface MarkerOptions {
     textMarker?: boolean;
     text?: string;
+
+    /** Centers the text around the marker. ⭐ */
+    textMarkerCentered?: boolean;
   }
 
   /**
@@ -84,6 +89,11 @@ declare module 'leaflet' {
     once(type: 'pm:cut', fn: PM.CutEventHandler): this;
     off(type: 'pm:cut', fn?: PM.CutEventHandler): this;
 
+    /** Fired when the layer being split. Draw+Edit Mode ⭐*/
+    on(type: 'pm:split', fn: PM.SplitEventHandler): this;
+    once(type: 'pm:split', fn: PM.SplitEventHandler): this;
+    off(type: 'pm:split', fn?: PM.SplitEventHandler): this;
+
     /** Fired when rotation is enabled for a layer. */
     on(type: 'pm:rotateenable', fn: PM.RotateEnableEventHandler): this;
     once(type: 'pm:rotateenable', fn: PM.RotateEnableEventHandler): this;
@@ -108,6 +118,31 @@ declare module 'leaflet' {
     on(type: 'pm:rotateend', fn: PM.RotateEndEventHandler): this;
     once(type: 'pm:rotateend', fn: PM.RotateEndEventHandler): this;
     off(type: 'pm:rotateend', fn?: PM.RotateEndEventHandler): this;
+
+    /** Fired when scaling is enabled for a layer. */
+    on(type: 'pm:scaleenable', fn: PM.ScaleEnableEventHandler): this;
+    once(type: 'pm:scaleenable', fn: PM.ScaleEnableEventHandler): this;
+    off(type: 'pm:scaleenable', fn?: PM.ScaleEnableEventHandler): this;
+
+    /** Fired when scaling is disabled for a layer. */
+    on(type: 'pm:scaledisable', fn: PM.ScaleDisableEventHandler): this;
+    once(type: 'pm:scaledisable', fn: PM.ScaleDisableEventHandler): this;
+    off(type: 'pm:scaledisable', fn?: PM.ScaleDisableEventHandler): this;
+
+    /** Fired when scaling starts on a layer. */
+    on(type: 'pm:scalestart', fn: PM.ScaleStartEventHandler): this;
+    once(type: 'pm:scalestart', fn: PM.ScaleStartEventHandler): this;
+    off(type: 'pm:scalestart', fn?: PM.ScaleStartEventHandler): this;
+
+    /** Fired when a layer is scaled. */
+    on(type: 'pm:scale', fn: PM.ScaleEventHandler): this;
+    once(type: 'pm:scale', fn: PM.ScaleEventHandler): this;
+    off(type: 'pm:scale', fn?: PM.ScaleEventHandler): this;
+
+    /** Fired when scaling ends on a layer. */
+    on(type: 'pm:scaleend', fn: PM.ScaleEndEventHandler): this;
+    once(type: 'pm:scaleend', fn: PM.ScaleEndEventHandler): this;
+    off(type: 'pm:scaleend', fn?: PM.ScaleEndEventHandler): this;
 
     /******************************************
      *
@@ -278,7 +313,7 @@ declare module 'leaflet' {
     once(type: 'pm:markerdragend', fn: PM.MarkerDragEndEventHandler): this;
     off(type: 'pm:markerdragend', fn?: PM.MarkerDragEndEventHandler): this;
 
-    /** Fired when coords of a layer are reset. E.g. by self-intersection.. */
+    /** Fired when coords of a layer are reset. E.g. by self-intersection. */
     on(type: 'pm:layerreset', fn: PM.LayerResetEventHandler): this;
     once(type: 'pm:layerreset', fn: PM.LayerResetEventHandler): this;
     off(type: 'pm:layerreset', fn?: PM.LayerResetEventHandler): this;
@@ -307,6 +342,44 @@ declare module 'leaflet' {
     on(type: 'pm:textblur', fn: PM.TextBlurEventHandler): this;
     once(type: 'pm:textblur', fn: PM.TextBlurEventHandler): this;
     off(type: 'pm:textblur', fn?: PM.TextBlurEventHandler): this;
+
+    /** Fired when the layer violates requireContainment.  */
+    on(
+      type: 'pm:containmentviolation',
+      fn: PM.ContainmentViolationEventHandler
+    ): this;
+    once(
+      type: 'pm:containmentviolation',
+      fn: PM.ContainmentViolationEventHandler
+    ): this;
+    off(
+      type: 'pm:containmentviolation',
+      fn?: PM.ContainmentViolationEventHandler
+    ): this;
+
+    /** Fired when the layer violates preventIntersection.  */
+    on(
+      type: 'pm:intersectionviolation',
+      fn: PM.IntersectionViolationEventHandler
+    ): this;
+    once(
+      type: 'pm:intersectionviolation',
+      fn: PM.IntersectionViolationEventHandler
+    ): this;
+    off(
+      type: 'pm:intersectionviolation',
+      fn?: PM.IntersectionViolationEventHandler
+    ): this;
+
+    /** Fired when the layer changes are canceled. */
+    on(type: 'pm:cancel', fn: PM.CancelEventHandler): this;
+    once(type: 'pm:cancel', fn: PM.CancelEventHandler): this;
+    off(type: 'pm:cancel', fn?: PM.CancelEventHandler): this;
+
+    /** Fired when the layer removing is canceled and the layer is re-added to the map. */
+    on(type: 'pm:undoremove', fn: PM.UndoRemoveEventHandler): this;
+    once(type: 'pm:undoremove', fn: PM.UndoRemoveEventHandler): this;
+    off(type: 'pm:undoremove', fn?: PM.UndoRemoveEventHandler): this;
 
     /******************************************
      *
@@ -489,6 +562,12 @@ declare module 'leaflet' {
     once(type: 'pm:difference', fn: PM.DifferenceEventHandler): this;
     off(type: 'pm:difference', fn?: PM.DifferenceEventHandler): this;
 
+    /******************************************
+     *
+     * TODO: Selection MODE EVENTS ON MAP ONLY
+     *
+     ********************************************/
+
     /** Fired when a layer is added to the selection. */
     on(type: 'pm:selectionadd', fn: PM.SelectionEventHandler): this;
     once(type: 'pm:selectionadd', fn: PM.SelectionEventHandler): this;
@@ -498,6 +577,110 @@ declare module 'leaflet' {
     on(type: 'pm:selectionremove', fn: PM.SelectionEventHandler): this;
     once(type: 'pm:selectionremove', fn: PM.SelectionEventHandler): this;
     off(type: 'pm:selectionremove', fn: PM.SelectionEventHandler): this;
+
+    /******************************************
+     *
+     * TODO: BringTo MODE EVENTS ON MAP ONLY
+     *
+     ********************************************/
+
+    /** Fired when SendToBack Mode is toggled. */
+    on(
+      type: 'pm:globalbringtobackmodetoggled',
+      fn: PM.GlobalSendToBackModeToggledEventHandler
+    ): this;
+    once(
+      type: 'pm:globalbringtobackmodetoggled',
+      fn: PM.GlobalSendToBackModeToggledEventHandler
+    ): this;
+    off(
+      type: 'pm:globalbringtobackmodetoggled',
+      fn?: PM.GlobalSendToBackModeToggledEventHandler
+    ): this;
+
+    /** Fired when BringToFront Mode is toggled. */
+    on(
+      type: 'pm:globalbringtofrontmodetoggled',
+      fn: PM.GlobalBringToFrontModeToggledEventHandler
+    ): this;
+    once(
+      type: 'pm:globalbringtofrontmodetoggled',
+      fn: PM.GlobalBringToFrontModeToggledEventHandler
+    ): this;
+    off(
+      type: 'pm:globalbringtofrontmodetoggled',
+      fn?: PM.GlobalBringToFrontModeToggledEventHandler
+    ): this;
+
+    /******************************************
+     *
+     * TODO: CopyLayer MODE EVENTS ON MAP ONLY
+     *
+     ********************************************/
+
+    /** Fired when CopyLayer Mode is toggled. */
+    on(
+      type: 'pm:globalcopylayermodetoggled',
+      fn: PM.GlobalCopyLayerModeToggledEventHandler
+    ): this;
+    once(
+      type: 'pm:globalcopylayermodetoggled',
+      fn: PM.GlobalCopyLayerModeToggledEventHandler
+    ): this;
+    off(
+      type: 'pm:globalcopylayermodetoggled',
+      fn?: PM.GlobalCopyLayerModeToggledEventHandler
+    ): this;
+
+    /** Fired when CopyLayer is executed. */
+    on(type: 'pm:copylayer', fn: PM.CopyLayerEventHandler): this;
+    once(type: 'pm:copylayer', fn: PM.CopyLayerEventHandler): this;
+    off(type: 'pm:copylayer', fn?: PM.CopyLayerEventHandler): this;
+
+    /******************************************
+     *
+     * TODO: LINE SIMPLIFICATION MODE EVENTS ON MAP ONLY
+     *
+     ********************************************/
+
+    /** Fired when CopyLayer Mode is toggled. */
+    on(
+      type: 'pm:globallinesimplificationmodetoggled',
+      fn: PM.GlobalLineSimplificationModeToggledEventHandler
+    ): this;
+    once(
+      type: 'pm:globallinesimplificationmodetoggled',
+      fn: PM.GlobalLineSimplificationModeToggledEventHandler
+    ): this;
+    off(
+      type: 'pm:globallinesimplificationmodetoggled',
+      fn?: PM.GlobalLineSimplificationModeToggledEventHandler
+    ): this;
+
+    /******************************************
+     *
+     * TODO: Lasso MODE EVENTS ON MAP ONLY
+     *
+     ********************************************/
+
+    /** Fired when Lasso Mode is toggled. */
+    on(
+      type: 'pm:globallassomodetoggled',
+      fn: PM.GlobalLassoModeToggledEventHandler
+    ): this;
+    once(
+      type: 'pm:globallassomodetoggled',
+      fn: PM.GlobalLassoModeToggledEventHandler
+    ): this;
+    off(
+      type: 'pm:globallassomodetoggled',
+      fn?: PM.GlobalLassoModeToggledEventHandler
+    ): this;
+
+    /** Fired when the Lasso has been drawn. */
+    on(type: 'pm:lasso-select', fn: PM.LassoSelectEventHandler): this;
+    once(type: 'pm:lasso-select', fn: PM.LassoSelectEventHandler): this;
+    off(type: 'pm:lasso-select', fn?: PM.LassoSelectEventHandler): this;
 
     /******************************************
      *
@@ -536,6 +719,107 @@ declare module 'leaflet' {
     on(type: 'pm:keyevent', fn: PM.KeyboardKeyEventHandler): this;
     once(type: 'pm:keyevent', fn: PM.KeyboardKeyEventHandler): this;
     off(type: 'pm:keyevent', fn?: PM.KeyboardKeyEventHandler): this;
+
+    /******************************************
+     *
+     * TODO: GLOBAL OPTIONS EVENTS ON MAP ONLY
+     *
+     ********************************************/
+
+    /** Fired when global options are changed. */
+    on(
+      type: 'pm:globaloptionschanged',
+      fn: PM.GlobalOptionsChangedEventHandler
+    ): this;
+    once(
+      type: 'pm:globaloptionschanged',
+      fn: PM.GlobalOptionsChangedEventHandler
+    ): this;
+    off(
+      type: 'pm:globaloptionschanged',
+      fn?: PM.GlobalOptionsChangedEventHandler
+    ): this;
+
+    /******************************************
+     *
+     * TODO: AUTO TRACING EVENTS ON MAP ONLY
+     *
+     ********************************************/
+
+    /** Fired when auto tracing is started and connected with a layer. ⭐ */
+    on(type: 'pm:autotracestart', fn: PM.AutoTraceEventHandler): this;
+    once(type: 'pm:autotracestart', fn: PM.AutoTraceEventHandler): this;
+    off(type: 'pm:autotracestart', fn?: PM.AutoTraceEventHandler): this;
+
+    /** Fired when auto tracing hintline is changed. ⭐ */
+    on(
+      type: 'pm:autotracelinechange',
+      fn: PM.AutoTraceLineChangeEventHandler
+    ): this;
+    once(
+      type: 'pm:autotracelinechange',
+      fn: PM.AutoTraceLineChangeEventHandler
+    ): this;
+    off(
+      type: 'pm:autotracelinechange',
+      fn?: PM.AutoTraceLineChangeEventHandler
+    ): this;
+
+    /** 	Fired when auto tracing is ended. ⭐ */
+    on(type: 'pm:autotraceend', fn: PM.AutoTraceEventHandler): this;
+    once(type: 'pm:autotraceend', fn: PM.AutoTraceEventHandler): this;
+    off(type: 'pm:autotraceend', fn?: PM.AutoTraceEventHandler): this;
+
+    /******************************************
+     *
+     * TODO: Split MODE EVENTS ON MAP ONLY
+     *
+     ********************************************/
+
+    /** Fired when a layer is split via Split Mode. */
+    on(
+      type: 'pm:globalsplitmodetoggled',
+      fn: PM.GlobalSplitModeToggledEventHandler
+    ): this;
+    once(
+      type: 'pm:globalsplitmodetoggled',
+      fn: PM.GlobalSplitModeToggledEventHandler
+    ): this;
+    off(
+      type: 'pm:globalsplitmodetoggled',
+      fn?: PM.GlobalSplitModeToggledEventHandler
+    ): this;
+
+    /******************************************
+     *
+     * TODO: SCALE MODE EVENTS ON MAP ONLY
+     *
+     ********************************************/
+
+    /** Fired when Scale Mode is toggled. */
+    on(
+      type: 'pm:globalscalemodetoggled',
+      fn: PM.GlobalScaleModeToggledEventHandler
+    ): this;
+    once(
+      type: 'pm:globalscalemodetoggled',
+      fn: PM.GlobalScaleModeToggledEventHandler
+    ): this;
+    off(
+      type: 'pm:globalscalemodetoggled',
+      fn?: PM.GlobalScaleModeToggledEventHandler
+    ): this;
+
+    /******************************************
+     *
+     * TODO: GLOBAL MODE CANCEL EVENTS ON MAP ONLY
+     *
+     ********************************************/
+
+    /** Fired when cancel of Mode is called. */
+    on(type: 'pm:globalcancel', fn: PM.GlobalCancelEventHandler): this;
+    once(type: 'pm:globalcancel', fn: PM.GlobalCancelEventHandler): this;
+    off(type: 'pm:globalcancel', fn?: PM.GlobalCancelEventHandler): this;
   }
 
   namespace PM {
@@ -552,6 +836,9 @@ declare module 'leaflet' {
       | 'CircleMarker'
       | 'ImageOverlay'
       | 'Text'
+      | 'Freehand' // ⭐
+      | 'Lasso' // ⭐
+      | 'CustomShape' // ⭐
       | string;
 
     type SupportLocales =
@@ -573,7 +860,6 @@ declare module 'leaflet' {
       | 'nl'
       | 'no'
       | 'pl'
-      | 'pt'
       | 'pt_br'
       | 'pt_pt'
       | 'ro'
@@ -611,7 +897,9 @@ declare module 'leaflet' {
         PMScaleMap,
         PMSelectionMap,
         PMUnionMap,
-        PMDifferenceMap {
+        PMLineSimplificationMap,
+        PMDifferenceMap,
+        PMLassoMap {
       Toolbar: PMMapToolbar;
 
       Keyboard: PMMapKeyboard;
@@ -658,12 +946,17 @@ declare module 'leaflet' {
         placeText?: string;
         selectFirstLayerFor?: string;
         selectSecondLayerFor?: string;
+        'freehand-start'?: string;
+        'lasso-start'?: string;
+        placeCustomShape?: string;
       };
 
       actions?: {
         finish?: string;
         cancel?: string;
         removeLastVertex?: string;
+        reset?: string;
+        clear?: string;
       };
 
       buttonTitles?: {
@@ -686,6 +979,14 @@ declare module 'leaflet' {
         snapGuidesButton?: string;
         unionButton?: string;
         differenceButton?: string;
+        sendToBackButton?: string;
+        bringToFrontButton?: string;
+        copyLayerButton?: string;
+        splitButton?: string;
+        lineSimplificationButton?: string;
+        lassoButton?: string;
+        freeHandButton?: string;
+        customShapeButton?: string;
       };
 
       measurements?: {
@@ -732,6 +1033,10 @@ declare module 'leaflet' {
       | 'spitalMode'
       | 'unionMode'
       | 'differenceMode'
+      | 'bringToMode'
+      | 'drawFreehand'
+      | 'lassoMode'
+      | 'drawCustomShape'
       | string;
 
     interface PMMapToolbar {
@@ -867,6 +1172,12 @@ declare module 'leaflet' {
 
       /** Control is disabled. */
       disabled?: boolean;
+
+      /** Control disables other buttons if enabled. */
+      disableOtherButtons?: boolean;
+
+      /** Control disabled if other buttons is enabled. */
+      disableByOtherButtons?: boolean;
     }
 
     type PANE =
@@ -879,6 +1190,8 @@ declare module 'leaflet' {
       | 'popupPane'
       | string;
 
+    type DISPLAY_FORMAT = 'metric' | 'imperial';
+
     interface GlobalOptions extends DrawModeOptions, EditModeOptions {
       /** Add the created layers to a layergroup instead to the map. */
       layerGroup?: L.Map | L.LayerGroup;
@@ -889,7 +1202,7 @@ declare module 'leaflet' {
       /** Defines in which panes the layers and helper vertices are created. Default: { vertexPane: 'markerPane', layerPane: 'overlayPane', markerPane: 'markerPane' } */
       panes?: { vertexPane?: PANE; layerPane?: PANE; markerPane?: PANE };
 
-      /** Measurement options */
+      /** Measurement options. ⭐*/
       measurements?: {
         measurement?: boolean;
         showTooltip?: boolean;
@@ -902,12 +1215,20 @@ declare module 'leaflet' {
         height?: boolean;
         width?: boolean;
         coordinates?: boolean;
-        displayFormat?: 'metric' | 'imperial';
+        displayFormat?: DISPLAY_FORMAT;
       };
 
-      autoTracing?: boolean;
+      /** Until which zoom level the coordinates of the layers in the viewport will be used. Default: 10 ⭐ */
+      autoTraceMaxZoom?: number;
 
+      /** The distance to the layer when a snap for auto tracing should happen. Default: 20 ⭐ */
+      autoTraceMaxDistance?: number;
+
+      /** Style options for selected layers. ⭐ */
       selectionLayerStyle?: L.PathOptions;
+
+      /** Changing the cut behavior to use a circle instead of a polygon. Default: false ⭐ */
+      cutAsCircle?: boolean;
     }
 
     interface PMDrawMap {
@@ -916,6 +1237,15 @@ declare module 'leaflet' {
 
       /** Disable all drawing */
       disableDraw(shape?: SUPPORTED_SHAPES): void;
+
+      /** Enable Custom Shape Draw Mode with a passed shape from the storage or as GeoJSON. ⭐ */
+      enableCustomShapeDraw(
+        shape: string | object,
+        options?: DrawModeOptions
+      ): void;
+
+      /** Disable Custom Shape drawing. ⭐ */
+      disableCustomShapeDraw(): void;
 
       /** Draw */
       Draw: Draw;
@@ -936,6 +1266,35 @@ declare module 'leaflet' {
       /** Returns all Geoman draw layers on the map as array. Pass true to get a L.FeatureGroup. */
       getGeomanDrawLayers(asFeatureGroup: true): L.FeatureGroup;
       getGeomanDrawLayers(asFeatureGroup?: false): L.Layer[];
+
+      /** Returns if CustomShape Draw Mode is enabled. ⭐ */
+      customShapeDrawEnabled(): boolean;
+
+      /** Adds a CustomShape to the storage. ⭐ */
+      addCustomShape(
+        name: string,
+        geojson: object,
+        options?: DrawModeOptions
+      ): void;
+
+      /** Removes a CustomShape from the storage. ⭐ */
+      removeCustomShape(name: string): void;
+
+      /** Returns all CustomShapes in the storage. ⭐ */
+      getCustomShapes(): {
+        [name: string]: { geojson: string; options?: DrawModeOptions };
+      };
+
+      /** Adds a CustomShape to the Toolbar. ⭐ */
+      addCustomShapeToToolbar(
+        name: string,
+        options:
+          | { className: string; text?: string; title?: string }
+          | { className?: string; text: string; title?: string }
+      ): void;
+
+      /** Removes a CustomShape from the Toolbar. ⭐ */
+      removeCustomShapeFromToolbar(name: string): void;
     }
 
     interface PMEditMap {
@@ -964,6 +1323,9 @@ declare module 'leaflet' {
 
       /** Returns true if global drag mode is enabled. false when disabled. */
       globalDragModeEnabled(): boolean;
+
+      /** Reverts the layers to the state before changing. ⭐  */
+      cancelGlobalDragMode(): void;
     }
 
     interface PMRemoveMap {
@@ -978,6 +1340,9 @@ declare module 'leaflet' {
 
       /** Returns true if global removal mode is enabled. false when disabled. */
       globalRemovalModeEnabled(): boolean;
+
+      /** Reverts the layers to the state before changing. ⭐  */
+      cancelGlobalRemovalMode(): void;
     }
 
     interface PMCutMap {
@@ -1006,74 +1371,152 @@ declare module 'leaflet' {
 
       /** Returns true if global rotate mode is enabled. false when disabled. */
       globalRotateModeEnabled(): boolean;
+
+      /** Reverts the layers to the state before changing. ⭐  */
+      cancelGlobalRotateMode(): void;
     }
 
     interface PMScaleMap {
-      /** Enables global scale mode. */
+      /** Enables global scale mode. ⭐ */
       enableGlobalScaleMode(): void;
 
-      /** Disables global scale mode. */
+      /** Disables global scale mode. ⭐ */
       disableGlobalScaleMode(): void;
 
-      /** Toggles global scale mode. */
+      /** Toggles global scale mode. ⭐ */
       toggleGlobalScaleMode(): void;
 
-      /** Returns true if global scale mode is enabled. false when disabled. */
+      /** Returns true if global scale mode is enabled. false when disabled. ⭐ */
       globalScaleModeEnabled(): boolean;
+
+      /** Reverts the layers to the state before changing. ⭐  */
+      cancelGlobalScaleMode(): void;
     }
 
     interface PMSelectionMap {
-      /** Enables global selection mode. Optional a filter can be added, which checks if the selection is allowed. */
+      /** Enables global selection mode. Optional a filter can be added, which checks if the selection is allowed. ⭐ */
       enableSelectionTool(filterFnc?: () => boolean): void;
 
-      /** Disables global selection mode. */
+      /** Disables global selection mode. ⭐ */
       disableSelectionTool(): void;
 
-      /** Returns true if global selection mode is enabled. false when disabled. */
+      /** Returns true if global selection mode is enabled. false when disabled. ⭐ */
       selectionToolEnabled(): boolean;
 
-      /** Adds a layer to the selection. */
+      /** Adds a layer to the selection. ⭐ */
       addSelection(layer: L.Layer): void;
 
-      /** Removes a layer from the selection. */
+      /** Removes a layer from the selection. ⭐ */
       removeSelection(layer: L.Layer): void;
 
-      /** Returns selected layers. */
+      /** Returns selected layers. ⭐ */
       getSelectedLayers(): L.Layer[];
+
+      /** Returns if the layer is selected. ⭐ */
+      isLayerSelected(layer: L.Layer): boolean;
     }
 
     interface PMUnionMap {
-      /** Enables global union mode. */
+      /** Enables global union mode. ⭐ */
       enableGlobalUnionMode(): void;
 
-      /** Disables global union mode. */
+      /** Disables global union mode. ⭐ */
       disableGlobalUnionMode(): void;
 
-      /** Toggles global union mode. */
+      /** Toggles global union mode. ⭐ */
       toggleGlobalUnionMode(): void;
 
-      /** Returns true if global union mode is enabled. false when disabled. */
+      /** Returns true if global union mode is enabled. false when disabled. ⭐ */
       globalUnionModeEnabled(): boolean;
 
-      /** Unifies the two layers. */
+      /** Unifies the two layers. ⭐ */
       union(layer1: L.Layer, layer2: L.Layer): void;
     }
 
     interface PMDifferenceMap {
-      /** Enables global difference mode. */
+      /** Enables global difference mode. ⭐ */
       enableGlobalDifferenceMode(): void;
 
-      /** Disables global difference mode. */
+      /** Disables global difference mode. ⭐ */
       disableGlobalDifferenceMode(): void;
 
-      /** Toggles global difference mode. */
+      /** Toggles global difference mode. ⭐ */
       toggleGlobalDifferenceMode(): void;
 
-      /** Returns true if global difference mode is enabled. false when disabled. */
+      /** Returns true if global difference mode is enabled. false when disabled. ⭐ */
       globalDifferenceModeEnabled(): boolean;
 
-      /** Subtracts the second selected layer from the first selected layer. */
+      /** Subtracts the second selected layer from the first selected layer. ⭐ */
       difference(layer1: L.Layer, layer2: L.Layer): void;
+    }
+
+    interface PMCopyLayerMap {
+      /** Enables global CopyLayer mode. ⭐ */
+      enableGlobalCopyLayerMode(): void;
+
+      /** Disables global CopyLayer mode. ⭐ */
+      disableGlobalCopyLayerMode(): void;
+
+      /** Toggles global CopyLayer mode. ⭐ */
+      toggleGlobalCopyLayerMode(): void;
+
+      /** Returns true if global CopyLayer mode is enabled. false when disabled. ⭐ */
+      globalCopyLayerModeEnabled(): boolean;
+
+      /** Resets the current source layer. ⭐ */
+      resetCopyLayerMode(): void;
+    }
+
+    interface PMLineSimplificationMap {
+      /** Enables global LineSimplification mode. ⭐ */
+      enableGlobalLineSimplificationMode(): void;
+
+      /** Disables global LineSimplification mode. ⭐ */
+      disableGlobalLineSimplificationMode(): void;
+
+      /** Toggles global LineSimplification mode. ⭐ */
+      toggleGlobalLineSimplificationMode(): void;
+
+      /** Returns true if global LineSimplification mode is enabled. false when disabled. ⭐ */
+      globalLineSimplificationModeEnabled(): boolean;
+
+      /** Reverts the layers to the state before changing. ⭐  */
+      cancelGlobalLineSimplificationMode(): void;
+    }
+
+    interface PMLassoMap {
+      /** Enables global Lasso mode. ⭐ */
+      enableGlobalLassoMode(options?: LassoModeOptions): void;
+
+      /** Disables global Lasso mode. ⭐ */
+      disableGlobalLassoMode(): void;
+
+      /** Toggles global Lasso mode. ⭐ */
+      toggleGlobalLassoMode(options?: LassoModeOptions): void;
+
+      /** Returns true if global Lasso mode is enabled. false when disabled. ⭐ */
+      globalLassoModeEnabled(): boolean;
+
+      /** Sets the Lasso Mode to Append. ⭐ */
+      setLassoAppendMode(): void;
+
+      /** Sets the Lasso Mode to Subtract. ⭐ */
+      setLassoSubtractMode(): void;
+
+      /** Sets the Lasso Mode to Reset. ⭐ */
+      setLassoResetMode(): void;
+
+      /** Get current Lasso Mode. ⭐ */
+      getLassoMode(): LASSO_MODES;
+
+      /** Sets the Lasso Select Mode to Intersect. ⭐ */
+      setLassoIntersectSelectMode(): void;
+
+      /** Sets the Lasso Select Mode to Contain. ⭐ */
+      setLassoContainSelectMode(): void;
+
+      /** Get current Lasso Select Mode. ⭐ */
+      getLassoSelectMode(): LASSO_SELECT_MODES;
     }
 
     interface PMRotateLayer {
@@ -1105,12 +1548,73 @@ declare module 'leaflet' {
       setRotationCenter(center: L.LatLng | null): void;
     }
 
-    interface Draw {
+    interface PMScaleLayer {
+      /** Enables Scale  mode on the layer. ⭐ */
+      enableScale(): void;
+
+      /** Disables Scale  mode on the layer. ⭐ */
+      disableScale(): void;
+
+      /** Returns if Scale mode is enabled for the layer. ⭐ */
+      scaleEnabled(): boolean;
+
+      /** Scale the layer by x percent. Also an Object with {w: width, h: height} can be passed. Scale up > 0 , scale down < 0. ⭐ */
+      scaleLayer(percent: number | { w: number; h: number }): void;
+    }
+
+    interface PMSplitMap {
+      /** Enables global split mode. ⭐ */
+      enableGlobalSplitMode(options?: SplitModeOptions): void;
+
+      /** Disables global split mode. ⭐ */
+      disableGlobalSplitMode(): void;
+
+      /** Toggles global split mode. ⭐ */
+      toggleGlobalSplitMode(options?: SplitModeOptions): void;
+
+      /** Returns true if global split mode is enabled. false when disabled. ⭐ */
+      globalSplitModeEnabled(): boolean;
+    }
+    interface PMBringToFrontMap {
+      /** Enables global BringToFront mode. ⭐ */
+      enableGlobalBringToFrontMode(): void;
+
+      /** Disables global BringToFront mode. ⭐ */
+      disableGlobalBringToFrontMode(): void;
+
+      /** Toggles global BringToFront mode. ⭐ */
+      toggleGlobalBringToFrontMode(): void;
+
+      /** Returns true if global BringToFront mode is enabled. false when disabled. ⭐ */
+      globalBringToFrontModeEnabled(): boolean;
+    }
+    interface PMSendToBackMap {
+      /** Enables global SendToBack mode. ⭐ */
+      enableGlobalSendToBackMode(): void;
+
+      /** Disables global SendToBack mode. ⭐ */
+      disableGlobalSendToBackMode(): void;
+
+      /** Toggles global SendToBack mode. ⭐ */
+      toggleGlobalSendToBackMode(): void;
+
+      /** Returns true if global SendToBack mode is enabled. false when disabled. ⭐ */
+      globalSendToBackModeEnabled(): boolean;
+    }
+
+    interface Draw extends LassoDraw {
       /** Array of available shapes. */
       getShapes(): SUPPORTED_SHAPES[];
 
       /** Returns the active shape. */
       getActiveShape(): SUPPORTED_SHAPES;
+
+      [key: SUPPORTED_SHAPES]: DrawShape;
+    }
+
+    interface DrawShape {
+      /** Applies the styles (templineStyle, hintlineStyle, pathOptions, markerStyle) to the drawing layer. map.pm.Draw.Line.setStyle(options). */
+      setStyle(options: L.PathOptions): void;
 
       /** Set path options */
       setPathOptions(options: L.PathOptions): void;
@@ -1122,9 +1626,61 @@ declare module 'leaflet' {
       getOptions(): DrawModeOptions;
     }
 
+    interface LassoDraw {
+      /** Sets the Lasso Mode to Append. ⭐ */
+      setAppendMode(): void;
+
+      /** Sets the Lasso Mode to Subtract. ⭐ */
+      setSubtractMode(): void;
+
+      /** Sets the Lasso Mode to Reset. ⭐ */
+      setResetMode(): void;
+
+      /** Sets the Lasso Select Mode to Intersect. ⭐ */
+      setIntersectSelectMode(): void;
+
+      /** Sets the Lasso Select Mode to Contain. ⭐ */
+      setContainSelectMode(): void;
+
+      /** Get current Lasso Mode. ⭐ */
+      getMode(): LASSO_MODES;
+
+      /** Get current Lasso Select Mode. ⭐ */
+      getSelectMode(): LASSO_SELECT_MODES;
+
+      /** Deselect all selected layers. ⭐ */
+      cleanupSelection(): void;
+
+      /** Get all selected layers. ⭐ */
+      getSelectedLayers(): L.Layer[];
+    }
+
     interface CutModeOptions {
       allowSelfIntersection?: boolean;
+
+      /** Allows cutting of circles. Default: true ⭐ */
+      allowCircleCut?: boolean;
     }
+
+    interface SplitModeOptions {
+      allowSelfIntersection?: boolean;
+
+      /** If it is set to false, layers can be excluded with the option splitMark: false. Set it to true to enable splitting only for the layers with the option splitMark: true. ⭐ */
+      splitOnlyMarkedLayers?: boolean;
+    }
+
+    interface LassoModeOptions {
+      /** Style of the lasso layer. ⭐ */
+      lassoDrawOptions?: L.PathOptions;
+      /** Mode for lasso. ⭐ */
+      mode?: LASSO_MODES;
+      /** Select mode for lasso. ⭐ */
+      selectMode?: LASSO_SELECT_MODES;
+    }
+
+    type LASSO_MODES = 'APPEND' | 'SUBTRACT' | 'RESET';
+
+    type LASSO_SELECT_MODES = 'CONTAIN' | 'INTERSECT';
 
     type VertexValidationHandler = (e: {
       layer: L.Layer;
@@ -1133,7 +1689,6 @@ declare module 'leaflet' {
     }) => boolean;
 
     interface EditModeOptions extends SnappingOptions {
-
       /** Allow self intersections (default:true). */
       allowSelfIntersection?: boolean;
 
@@ -1208,6 +1763,51 @@ declare module 'leaflet' {
 
       /** Hide the middle Markers in edit mode from Polyline and Polygon. */
       hideMiddleMarkers?: boolean;
+
+      /** The angles at which the snap guides are created. (default: [90]) ⭐ */
+      snapGuidesAngles?: number[];
+
+      /** Styles the border helpline. ⭐ */
+      scaleBorderStyle: L.PathOptions;
+
+      /** Scale origin is the center, else it is the opposite corner. If false Alt-Key can be used. (default:true). ⭐ */
+      centerScaling: boolean;
+
+      /** Width and height are scaled with the same ratio. If false Shift-Key can be used. (default:true). ⭐ */
+      uniformScaling: boolean;
+
+      /** Layer can be prevented from auto tracing. (default:true). ⭐ */
+      allowAutoTracing: boolean;
+
+      /** Add Vertices while clicking on the line of Polyline or Polygon. (default:true). ⭐ */
+      addVertexOnClick: boolean;
+
+      /** Layer can be prevented from pinning. (default:true). ⭐ */
+      allowPinning: boolean;
+
+      /** Styles the Snap Guides. ⭐ */
+      snapGuidesStyle: L.PathOptions;
+
+      /** Enables the Snap guides. (default:false). ⭐ */
+      showSnapGuides: boolean;
+
+      /** Layer can be prevented from used in Union Mode. (default:true). ⭐ */
+      allowUnion: boolean;
+
+      /** Layer can be prevented from used in Difference Mode. (default:true). ⭐ */
+      allowDifference: boolean;
+
+      /** Selecting via Lasso can be disabled for the layer. (default:true). ⭐ */
+      lassoSelectable: boolean;
+
+      /** While editing the layer needs to be contained in one of the layers in the Array. ⭐ */
+      requireContainment: (L.Polygon | L.Circle | L.ImageOverlay)[];
+
+      /** While editing the layer can't intersect with the layers in the Array. ⭐ */
+      preventIntersection: L.Layer[];
+
+      /** Layer can be prevented from scaling. (default:true). ⭐ */
+      allowScale: boolean;
     }
 
     interface TextOptions {
@@ -1222,10 +1822,12 @@ declare module 'leaflet' {
 
       /** Custom CSS Classes for Text-Layer. Separated by a space. */
       className?: string;
+
+      /** Centers the text on the positions. ⭐ */
+      textMarkerCentered?: boolean;
     }
 
     interface DrawModeOptions extends SnappingOptions {
-
       /** Require the last point of a shape to be snapped. (default: false). */
       requireSnapToFinish?: boolean;
 
@@ -1300,6 +1902,30 @@ declare module 'leaflet' {
       layersToCut?: L.Layer[];
 
       textOptions?: TextOptions;
+
+      /** Leaflet path options for the freehand polygon while drawing. To the resulting layer will be the pathOptions applied (default:null) ⭐ */
+      freehandOptions: L.PathOptions;
+
+      /** Leaflet path options for the lasso polygon while drawing. The option `fill` will be always true. (default:null) ⭐ */
+      lassoDrawOptions: L.PathOptions;
+
+      /** Style / Geojson ooptions for custom shape. ⭐ */
+      customShapeGeoJSONOptions?: L.GeoJSONOptions;
+
+      /** While drawing one of the layers in the Array need to contain the new layer. ⭐ */
+      requireContainment: (L.Polygon | L.Circle | L.ImageOverlay)[];
+
+      /** While drawing the new layer can't intersect with one of the layers in the Array. ⭐ */
+      preventIntersection: L.Layer[];
+
+      /** Closes the Polygon while drawing. ⭐ */
+      closedPolygonEdge?: boolean;
+
+      /** Shows the Polygon fill while drawing. ⭐ */
+      closedPolygonFill?: boolean;
+
+      /** Enables auto-tracing. Default: false ⭐ */
+      autoTracing?: boolean;
     }
 
     interface SnappingOptions {
@@ -1386,6 +2012,60 @@ declare module 'leaflet' {
       /** Adds a button to toggle the Snapping Option ⭐ */
       snappingOption?: boolean;
 
+      /** Adds button to toggle Split mode (default:true) ⭐ */
+      splitMode?: boolean;
+
+      /** Adds button to toggle Scale mode (default:true) ⭐ */
+      scaleMode?: boolean;
+
+      /** Adds button to toggle Auto Tracing Option (default:true) ⭐ */
+      autoTracingOption?: boolean;
+
+      /** Adds button to toggle Snap Guides Option (default:true) ⭐ */
+      snapGuidesOption?: boolean;
+
+      /** Adds button to toggle Spital mode (default:true) ⭐ */
+      spitalMode?: boolean;
+
+      /** Adds button to toggle Union mode (default:true) ⭐ */
+      unionMode?: boolean;
+
+      /** Adds button to toggle Difference mode (default:true) ⭐ */
+      differenceMode?: boolean;
+
+      /** Adds button to toggle Bring To modes (default:false) ⭐ */
+      bringToMode?: boolean;
+
+      /** Adds button to toggle Send to Back mode (default:false) ⭐ */
+      sendToBackMode?: boolean;
+
+      /** Adds button to toggle Bring To Front mode (default:false) ⭐ */
+      bringToFrontMode?: boolean;
+
+      /** Adds button to draw Freehand (default:false) ⭐ */
+      drawFreehand?: boolean;
+
+      /** Adds button to toggle Lasso mode (default:false) ⭐ */
+      lassoMode?: boolean;
+
+      /** Adds button to toggle CopyLayer mode (default:false) ⭐ */
+      copyLayerMode?: boolean;
+
+      /** Adds button to toggle LineSimplification mode (default:false) ⭐ */
+      lineSimplificationMode?: boolean;
+
+      /** Hide the cancel button for edit modes (default: []) ⭐ */
+      hideCancelActionOf:
+        | null
+        | (
+            | 'editMode'
+            | 'dragMode'
+            | 'removalMode'
+            | 'rotateMode'
+            | 'scaleMode'
+            | 'lineSimplificationMode'
+          )[];
+
       /** Adds custom button (default:true) */
       // The type of custom buttons are always boolean but TS needs the other types defined too.
       [key: string]: L.ControlPosition | BlockPositions | boolean | undefined;
@@ -1430,6 +2110,9 @@ declare module 'leaflet' {
 
       /** Removes the layer with the same checks as GlobalRemovalMode. */
       remove(): void;
+
+      /** Reverts the layer to the state before changing. ⭐  */
+      cancel(): void;
     }
 
     interface PMEditTextLayer {
@@ -1466,7 +2149,17 @@ declare module 'leaflet' {
       layerDragEnabled(): boolean;
     }
 
-    interface PMLayer extends PMRotateLayer, PMEditLayer, PMDragLayer {
+    interface PMMeasurementLayer {
+      /** Contains the measurements of the last calculation. ⭐ */
+      measurements: MeasurementData;
+    }
+
+    interface PMLayer
+      extends PMRotateLayer,
+        PMEditLayer,
+        PMDragLayer,
+        PMMeasurementLayer,
+        PMScaleLayer {
       /** Get shape of the layer. */
       getShape(): SUPPORTED_SHAPES;
     }
@@ -1501,6 +2194,15 @@ declare module 'leaflet' {
       dragging(): boolean;
     }
 
+    interface MeasurementData {
+      distance?: number;
+      area?: number;
+      height?: number;
+      width?: number;
+      segmentdistance?: number;
+      radius?: number;
+    }
+
     namespace Utils {
       /**  Returns the translation of the passed path. path = json-string f.ex. tooltips.placeMarker */
       function getTranslation(path: string): string;
@@ -1528,6 +2230,21 @@ declare module 'leaflet' {
         map: L.Map,
         center: L.LatLng
       ): number;
+
+      function getMeasurements(
+        layer: L.Layer,
+        map: L.Map,
+        displayFormat: DISPLAY_FORMAT
+      ): MeasurementData;
+
+      /** Moves the center of a layer to the coordinates. ⭐ */
+      function moveLayerTo(layer: L.Layer, centerLatLng: L.LatLng): void;
+
+      /** Moves the center of a layer by the delta. ⭐ */
+      function moveLayerBy(layer: L.Layer, deltaLatLng: L.LatLng): void;
+
+      /** Copies a layer and applies it options to the new layer. ⭐ */
+      function copyLayer(layer: L.Layer): L.Layer;
     }
 
     /**
@@ -1664,6 +2381,14 @@ declare module 'leaflet' {
       shape: PM.SUPPORTED_SHAPES;
       layer: L.Layer;
     }) => void;
+    export type ContainmentViolationEventHandler = (e: {
+      layer: L.Layer;
+    }) => void;
+    export type IntersectionViolationEventHandler = (e: {
+      layer: L.Layer;
+    }) => void;
+    export type CancelEventHandler = (e: { layer: L.Layer }) => void;
+    export type UndoRemoveEventHandler = (e: { layer: L.Layer }) => void;
 
     /**
      * EDIT MODE MAP EVENT HANDLERS
@@ -1821,6 +2546,63 @@ declare module 'leaflet' {
     export type SelectionEventHandler = (e: { layer: L.Layer }) => void;
 
     /**
+     * SendToBack MODE MAP EVENT HANDLERS
+     */
+    export type GlobalSendToBackModeToggledEventHandler = (e: {
+      enabled: boolean;
+      map: L.Map;
+    }) => void;
+
+    /**
+     * BringToFront MODE MAP EVENT HANDLERS
+     */
+    export type GlobalBringToFrontModeToggledEventHandler = (e: {
+      enabled: boolean;
+      map: L.Map;
+    }) => void;
+
+    /**
+     * CopyLayer MODE MAP EVENT HANDLERS
+     */
+    export type GlobalCopyLayerModeToggledEventHandler = (e: {
+      enabled: boolean;
+      map: L.Map;
+    }) => void;
+    /**
+     * CopyLayer EVENT HANDLERS
+     */
+    export type CopyLayerEventHandler = (e: {
+      sourceLayer: L.Layer;
+      newLayer: L.Layer;
+      shape: SUPPORTED_SHAPES;
+    }) => void;
+
+    /**
+     * CopyLayer MODE MAP EVENT HANDLERS
+     */
+    export type GlobalLineSimplificationModeToggledEventHandler = (e: {
+      enabled: boolean;
+      map: L.Map;
+    }) => void;
+
+    /**
+     * Lasso MODE MAP EVENT HANDLERS
+     */
+    export type GlobalLassoModeToggledEventHandler = (e: {
+      enabled: boolean;
+      map: L.Map;
+    }) => void;
+
+    /**
+     * DIFFERENCE EVENT HANDLERS
+     */
+    export type LassoSelectEventHandler = (e: {
+      lassoCoords: L.LatLng[];
+      selectionChangedLayers: L.Layer[];
+      selectedLayers: L.Layer[];
+    }) => void;
+
+    /**
      * TRANSLATION EVENT HANDLERS
      */
     export type LangChangeEventHandler = (e: {
@@ -1852,5 +2634,75 @@ declare module 'leaflet' {
       eventType: 'keydown' | 'keyup';
       event: any;
     }) => void;
+
+    /**
+     * GLOBAL OPTIONS CHANGED EVENT HANDLERS
+     */
+    export type GlobalOptionsChangedEventHandler = (e: { event: any }) => void;
+
+    /**
+     * AUTO TRACE EVENT HANDLERS
+     */
+    export type AutoTraceEventHandler = (e: { event: any }) => void;
+    export type AutoTraceLineChangeEventHandler = (e: {
+      hintLatLngs: L.LatLng[];
+    }) => void;
+
+    /**
+     * Split MODE MAP EVENT HANDLERS
+     */
+    export type GlobalSplitModeToggledEventHandler = (e: {
+      enabled: boolean;
+      map: L.Map;
+    }) => void;
+    export type SplitEventHandler = (e: {
+      layers: L.Layer[];
+      originalLayer: L.Layer;
+      splitLayer: L.Layer;
+      shape: PM.SUPPORTED_SHAPES;
+    }) => void;
+
+    /**
+     * SCALE MODE LAYER EVENT HANDLERS
+     */
+    export type ScaleEnableEventHandler = (e: {
+      layer: L.Layer;
+      helpLayer: L.Layer;
+      shape: PM.SUPPORTED_SHAPES;
+    }) => void;
+    export type ScaleDisableEventHandler = (e: {
+      layer: L.Layer;
+      shape: PM.SUPPORTED_SHAPES;
+    }) => void;
+    export type ScaleStartEventHandler = (e: {
+      layer: L.Layer;
+      helpLayer: L.Layer;
+      originLatLngs: L.LatLng[];
+    }) => void;
+    export type ScaleEventHandler = (e: {
+      layer: L.Layer;
+      helpLayer: L.Layer;
+      oldLatLngs: L.LatLng[];
+      newLatLngs: L.LatLng[];
+    }) => void;
+    export type ScaleEndEventHandler = (e: {
+      layer: L.Layer;
+      helpLayer: L.Layer;
+      originLatLngs: L.LatLng[];
+      newLatLngs: L.LatLng[];
+    }) => void;
+
+    /**
+     * SCALE MODE MAP EVENT HANDLERS
+     */
+    export type GlobalScaleModeToggledEventHandler = (e: {
+      enabled: boolean;
+      map: L.Map;
+    }) => void;
+
+    /**
+     * CANCEL MODE MAP EVENT HANDLERS
+     */
+    export type GlobalCancelEventHandler = (e: { map: L.Map }) => void;
   }
 }
