@@ -79,5 +79,6 @@
   "lint-staged": {
     "*.js": "eslint \"{src,demo}/**/*.js\" --fix",
     "*.{js,css,md}": "prettier --write \"{src,demo}/**/*.{js,css}\""
-  }
+  },
+  "packageManager": "pnpm@10.7.0"
 }
