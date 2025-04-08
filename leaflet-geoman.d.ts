@@ -1768,46 +1768,46 @@ declare module 'leaflet' {
       snapGuidesAngles?: number[];
 
       /** Styles the border helpline. ⭐ */
-      scaleBorderStyle: L.PathOptions;
+      scaleBorderStyle?: L.PathOptions;
 
       /** Scale origin is the center, else it is the opposite corner. If false Alt-Key can be used. (default:true). ⭐ */
-      centerScaling: boolean;
+      centerScaling?: boolean;
 
       /** Width and height are scaled with the same ratio. If false Shift-Key can be used. (default:true). ⭐ */
-      uniformScaling: boolean;
+      uniformScaling?: boolean;
 
       /** Layer can be prevented from auto tracing. (default:true). ⭐ */
-      allowAutoTracing: boolean;
+      allowAutoTracing?: boolean;
 
       /** Add Vertices while clicking on the line of Polyline or Polygon. (default:true). ⭐ */
-      addVertexOnClick: boolean;
+      addVertexOnClick?: boolean;
 
       /** Layer can be prevented from pinning. (default:true). ⭐ */
-      allowPinning: boolean;
+      allowPinning?: boolean;
 
       /** Styles the Snap Guides. ⭐ */
-      snapGuidesStyle: L.PathOptions;
+      snapGuidesStyle?: L.PathOptions;
 
       /** Enables the Snap guides. (default:false). ⭐ */
-      showSnapGuides: boolean;
+      showSnapGuides?: boolean;
 
       /** Layer can be prevented from used in Union Mode. (default:true). ⭐ */
-      allowUnion: boolean;
+      allowUnion?: boolean;
 
       /** Layer can be prevented from used in Difference Mode. (default:true). ⭐ */
-      allowDifference: boolean;
+      allowDifference?: boolean;
 
       /** Selecting via Lasso can be disabled for the layer. (default:true). ⭐ */
-      lassoSelectable: boolean;
+      lassoSelectable?: boolean;
 
       /** While editing the layer needs to be contained in one of the layers in the Array. ⭐ */
-      requireContainment: (L.Polygon | L.Circle | L.ImageOverlay)[];
+      requireContainment?: (L.Polygon | L.Circle | L.ImageOverlay)[];
 
       /** While editing the layer can't intersect with the layers in the Array. ⭐ */
-      preventIntersection: L.Layer[];
+      preventIntersection?: L.Layer[];
 
       /** Layer can be prevented from scaling. (default:true). ⭐ */
-      allowScale: boolean;
+      allowScale?: boolean;
     }
 
     interface TextOptions {
