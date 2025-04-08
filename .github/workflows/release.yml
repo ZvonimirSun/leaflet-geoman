@@ -29,15 +29,6 @@ jobs:
       - name: Prepare package
         run: pnpm pack
 
-      - name: Publish to NPM
-        shell: bash
-        run: |
-          #!/bin/bash
-
-          # Set npm configurations
-          pnpm config set shamefully-hoist true
-          pnpm config set strict-peer-dependencies false
-
-          # Set auth token
-          pnpm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
-          pnpm publish --no-git-checks
+      - run: pnpm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
