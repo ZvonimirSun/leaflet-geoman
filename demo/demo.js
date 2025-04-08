@@ -251,7 +251,8 @@ map3.pm.enableDraw('Polygon', {
   markerStyle,
   cursorMarker: false,
   // finishOn: 'contextmenu',
-  finishOnDoubleClick: true,
+  finishOn: 'dblclick',
+  closedPolygonEdge: true,
 });
 
 const scotland = L.polygon([

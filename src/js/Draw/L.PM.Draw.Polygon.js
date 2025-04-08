@@ -9,6 +9,15 @@ Draw.Polygon = Draw.Line.extend({
   },
   enable(options) {
     L.PM.Draw.Line.prototype.enable.call(this, options);
+
+    // sync the closeline with hint marker
+    if (this.options.closedPolygonEdge) {
+      this._closeLine = L.polyline([], this.options.hintlineStyle);
+      this._setPane(this._closeLine, 'layerPane');
+      this._closeLine._pmTempLayer = true;
+      this._layerGroup.addLayer(this._closeLine);
+      this._hintMarker.on('move', this._syncCloseLine, this);
+    }
     // Overwrite the shape "Line" of this._layer
     this._layer.pm._shape = 'Polygon';
   },
@@ -57,6 +66,64 @@ Draw.Polygon = Draw.Line.extend({
       text = getTranslation('tooltips.finishPoly');
     }
     this._hintMarker.setTooltipContent(text);
+  },
+  _syncCloseLine() {
+    const polyPoints = this._layer.getLatLngs();
+
+    if (polyPoints.length > 1) {
+      const firstPolygonPoint = polyPoints[0];
+
+      // set coords for closeline from marker to first vertex of drawin polyline
+      this._closeLine.setLatLngs([
+        firstPolygonPoint,
+        this._hintMarker.getLatLng(),
+      ]);
+    }
+  },
+  _handleSelfIntersection(addVertex, latlng) {
+    L.PM.Draw.Line.prototype._handleSelfIntersection.call(
+      this,
+      addVertex,
+      latlng
+    );
+    if (!this.options.closedPolygonEdge) {
+      return;
+    }
+
+    // change the style based on self intersection
+    if (this._doesSelfIntersect) {
+      this._closeLine.setStyle({
+        color: '#f00000ff',
+      });
+    } else if (!this._closeLine.isEmpty()) {
+      this._closeLine.setStyle(this.options.hintlineStyle);
+    }
+  },
+  _createVertex(e) {
+    L.PM.Draw.Line.prototype._createVertex.call(this, e);
+
+    // get coordinate for new vertex by hintMarker (cursor marker)
+    const latlng = this._hintMarker.getLatLng();
+
+    if (this.options.closedPolygonEdge) {
+      this._setCloseLineAfterNewVertex(latlng);
+    }
+  },
+  _setCloseLineAfterNewVertex(hintMarkerLatLng) {
+    // make the new drawn line (with another style) visible
+    const polyPoints = this._layer.getLatLngs();
+    if (polyPoints.length > 1) {
+      const firstPolygonPoint = polyPoints[0];
+      this._closeLine.setLatLngs([hintMarkerLatLng, firstPolygonPoint]);
+    }
+  },
+  _removeLastVertex() {
+    L.PM.Draw.Line.prototype._removeLastVertex.call(this);
+
+    // sync the closeline again
+    if (this.options.closedPolygonEdge) {
+      this._syncCloseLine();
+    }
   },
   _finishShape() {
     // if self intersection is not allowed, do not finish the shape!
@@ -109,5 +176,9 @@ Draw.Polygon = Draw.Line.extend({
       this.enable();
       this._hintMarker.setLatLng(hintMarkerLatLng);
     }
+  },
+  setStyle() {
+    L.PM.Draw.Line.prototype.setStyle.call(this);
+    this._closeLine?.setStyle(this.options.hintlineStyle);
   },
 });
