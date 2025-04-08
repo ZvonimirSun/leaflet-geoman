@@ -1,6 +1,6 @@
 {
-  "name": "@geoman-io/leaflet-geoman-free",
-  "version": "2.18.3",
+  "name": "@zvonimirsun/leaflet-geoman",
+  "version": "1.0.0",
   "description": "A Leaflet Plugin For Editing Geometry Layers in Leaflet 1.0",
   "keywords": [
     "leaflet",
@@ -62,18 +62,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/geoman-io/leaflet-geoman.git"
+    "url": "git://github.com/zvonimirsun/leaflet-geoman.git"
   },
-  "author": {
-    "name": "Geoman.io",
-    "email": "sales@geoman.io",
-    "url": "http://geoman.io"
-  },
+  "author": "ZvonimirSun",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/geoman-io/leaflet-geoman/issues"
+    "url": "https://github.com/zvonimirsun/leaflet-geoman/issues"
   },
-  "homepage": "https://geoman.io",
+  "homepage": "https://github.com/zvonimirsun/leaflet-geoman",
   "prettier": {
     "trailingComma": "es5",
     "tabWidth": 2,
