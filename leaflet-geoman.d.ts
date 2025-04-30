@@ -820,6 +820,17 @@ declare module 'leaflet' {
     on(type: 'pm:globalcancel', fn: PM.GlobalCancelEventHandler): this;
     once(type: 'pm:globalcancel', fn: PM.GlobalCancelEventHandler): this;
     off(type: 'pm:globalcancel', fn?: PM.GlobalCancelEventHandler): this;
+
+    /******************************************
+     *
+     * TODO: ERROR EVENTS ON MAP ONLY
+     *
+     ********************************************/
+
+    /** Fired when an error is thrown. */
+    on(type: 'pm:error', fn: PM.ErrorEventHandler): this;
+    once(type: 'pm:error', fn: PM.ErrorEventHandler): this;
+    off(type: 'pm:error', fn?: PM.ErrorEventHandler): this;
   }
 
   namespace PM {
@@ -1073,7 +1084,7 @@ declare module 'leaflet' {
       /** Creates a copy of a draw Control. Returns the drawInstance and the control. */
       copyDrawControl(
         copyInstance: string,
-        options?: CustomControlOptions
+        options: CustomControlOptions
       ): {
         drawInstance: Draw;
         control: L.Control;
@@ -1087,6 +1098,9 @@ declare module 'leaflet' {
 
       /** Disable button by control name */
       setButtonDisabled(name: TOOLBAR_CONTROL_ORDER, state: boolean): void;
+
+      /** Deletes and removes a Control from the Toolbar */
+      deleteControl(name: string): void;
     }
 
     type KEYBOARD_EVENT_TYPE = 'current' | 'keydown' | 'keyup';
@@ -1113,33 +1127,33 @@ declare module 'leaflet' {
 
     interface Button {
       /** Actions */
-      actions: (ACTION_NAMES | Action)[];
+      actions?: (ACTION_NAMES | Action)[];
 
       /** Function fired after clicking the control. */
-      afterClick: () => void;
+      afterClick?: () => void;
 
       /** CSS class with the Icon. */
-      className: string;
+      className?: string;
 
       /** If true, other buttons will be disabled on click (default: true) */
-      disableOtherButtons: boolean;
+      disableOtherButtons?: boolean;
 
       /** Control can be toggled. */
-      doToggle: boolean;
+      doToggle?: boolean;
 
       /** Extending Class f. ex. Line, Polygon, ... L.PM.Draw.EXTENDINGCLASS */
-      jsClass: string;
+      jsClass?: string;
 
       /** Function fired when clicking the control. */
-      onClick: () => void;
+      onClick?: () => void;
 
-      position: L.ControlPosition;
+      position?: L.ControlPosition;
 
       /** Text showing when you hover the control. */
-      title: string;
+      title?: string;
 
       /** Toggle state true -> enabled, false -> disabled (default: false) */
-      toggleStatus: boolean;
+      toggleStatus?: boolean;
 
       /** Block of the control. 'options' is ⭐ only. */
       tool?: 'draw' | 'edit' | 'custom' | 'options';
@@ -1255,8 +1269,11 @@ declare module 'leaflet' {
 
       /** Customize the style of the drawn layer. Only for L.Path layers. Shapes can be excluded with a ignoreShapes array or merged with the current style with merge: true in  optionsModifier. */
       setPathOptions(
-        options: L.PathOptions,
-        optionsModifier?: { ignoreShapes?: SUPPORTED_SHAPES[]; merge?: boolean }
+        options: L.PathOptions | L.CircleMarkerOptions,
+        optionsModifier?: { 
+          ignoreShapes?: SUPPORTED_SHAPES[],
+          merge?: boolean 
+        }
       ): void;
 
       /** Returns all Geoman layers on the map as array. Pass true to get a L.FeatureGroup. */
@@ -1609,15 +1626,15 @@ declare module 'leaflet' {
       /** Returns the active shape. */
       getActiveShape(): SUPPORTED_SHAPES;
 
-      [key: SUPPORTED_SHAPES]: DrawShape;
+      [key: string]: DrawShape | ((...args: any[]) => any);
     }
 
     interface DrawShape {
       /** Applies the styles (templineStyle, hintlineStyle, pathOptions, markerStyle) to the drawing layer. map.pm.Draw.Line.setStyle(options). */
-      setStyle(options: L.PathOptions): void;
+      setStyle(options: L.PathOptions | L.CircleMarkerOptions): void;
 
       /** Set path options */
-      setPathOptions(options: L.PathOptions): void;
+      setPathOptions(options: L.PathOptions | L.CircleMarkerOptions): void;
 
       /** Set options */
       setOptions(options: DrawModeOptions): void;
@@ -1729,7 +1746,7 @@ declare module 'leaflet' {
         | 'contextmenu';
 
       /** A function for validation if a vertex (of a Line / Polygon) is allowed to add. It passes a object with `[layer, marker, event}`. For example to check if the layer has a certain property or if the `Ctrl` key is pressed. (default:undefined). */
-      addVertexValidation?: undefined | VertexValidationHandler;
+      addVertexValidation?: VertexValidationHandler;
 
       /** Leaflet layer event to remove a vertex from a Line or Polygon, like dblclick. (default:contextmenu). */
       removeVertexOn?:
@@ -1741,10 +1758,10 @@ declare module 'leaflet' {
         | 'contextmenu';
 
       /** A function for validation if a vertex (of a Line / Polygon) is allowed to remove. It passes a object with `[layer, marker, event}`. For example to check if the layer has a certain property or if the `Ctrl` key is pressed. */
-      removeVertexValidation?: undefined | VertexValidationHandler;
+      removeVertexValidation?: VertexValidationHandler;
 
       /** A function for validation if a vertex / helper-marker is allowed to move / drag. It passes a object with `[layer, marker, event}`. For example to check if the layer has a certain property or if the `Ctrl` key is pressed. */
-      moveVertexValidation?: undefined | VertexValidationHandler;
+      moveVertexValidation?: VertexValidationHandler;
 
       /** Shows only n markers closest to the cursor. Use -1 for no limit (default:-1). */
       limitMarkersToCount?: number;
@@ -1838,13 +1855,13 @@ declare module 'leaflet' {
       allowSelfIntersection?: boolean;
 
       /** Leaflet path options for the lines between drawn vertices/markers. (default:{color:'red'}). */
-      templineStyle?: L.CircleMarkerOptions;
+      templineStyle?: L.PathOptions | L.CircleMarkerOptions;
 
       /** Leaflet path options for the helper line between last drawn vertex and the cursor. (default:{color:'red',dashArray:[5,5]}). */
-      hintlineStyle?: L.PathOptions;
+      hintlineStyle?: L.PathOptions | L.CircleMarkerOptions;
 
       /** Leaflet path options for the drawn layer (Only for L.Path layers). (default:null). */
-      pathOptions?: L.PathOptions;
+      pathOptions?: L.PathOptions | L.CircleMarkerOptions;
 
       /** Leaflet marker options (only for drawing markers). (default:{draggable:true}). */
       markerStyle?: L.MarkerOptions;
@@ -1904,19 +1921,19 @@ declare module 'leaflet' {
       textOptions?: TextOptions;
 
       /** Leaflet path options for the freehand polygon while drawing. To the resulting layer will be the pathOptions applied (default:null) ⭐ */
-      freehandOptions: L.PathOptions;
+      freehandOptions?: L.PathOptions;
 
       /** Leaflet path options for the lasso polygon while drawing. The option `fill` will be always true. (default:null) ⭐ */
-      lassoDrawOptions: L.PathOptions;
+      lassoDrawOptions?: L.PathOptions;
 
       /** Style / Geojson ooptions for custom shape. ⭐ */
       customShapeGeoJSONOptions?: L.GeoJSONOptions;
 
       /** While drawing one of the layers in the Array need to contain the new layer. ⭐ */
-      requireContainment: (L.Polygon | L.Circle | L.ImageOverlay)[];
+      requireContainment?: (L.Polygon | L.Circle | L.ImageOverlay)[];
 
       /** While drawing the new layer can't intersect with one of the layers in the Array. ⭐ */
-      preventIntersection: L.Layer[];
+      preventIntersection?: L.Layer[];
 
       /** Closes the Polygon while drawing. ⭐ */
       closedPolygonEdge?: boolean;
@@ -1944,6 +1961,8 @@ declare module 'leaflet' {
       /** Allow snapping to vertices. (default: true)*/
       snapVertex?: boolean;
     }
+
+    type CancelActionModes = 'editMode' | 'dragMode' | 'removalMode' | 'rotateMode' | 'scaleMode' | 'lineSimplificationMode';
 
     /**
      * PM toolbar options.
@@ -2055,20 +2074,11 @@ declare module 'leaflet' {
       lineSimplificationMode?: boolean;
 
       /** Hide the cancel button for edit modes (default: []) ⭐ */
-      hideCancelActionOf:
-        | null
-        | (
-            | 'editMode'
-            | 'dragMode'
-            | 'removalMode'
-            | 'rotateMode'
-            | 'scaleMode'
-            | 'lineSimplificationMode'
-          )[];
+      hideCancelActionOf?: CancelActionModes[];
 
       /** Adds custom button (default:true) */
       // The type of custom buttons are always boolean but TS needs the other types defined too.
-      [key: string]: L.ControlPosition | BlockPositions | boolean | undefined;
+      [key: string]: L.ControlPosition | BlockPositions | boolean | undefined | CancelActionModes[];
     }
 
     /** the position of each block. */
@@ -2194,13 +2204,19 @@ declare module 'leaflet' {
       dragging(): boolean;
     }
 
+    interface Measurement {
+      value: number;
+      unit: string;
+      baseValueMeter: number;
+    }
+
     interface MeasurementData {
-      distance?: number;
-      area?: number;
-      height?: number;
-      width?: number;
-      segmentdistance?: number;
-      radius?: number;
+      distance?: Measurement;
+      area?: Measurement;
+      height?: Measurement;
+      width?: Measurement;
+      segmentdistance?: Measurement;
+      radius?: Measurement;
     }
 
     namespace Utils {
@@ -2704,5 +2720,10 @@ declare module 'leaflet' {
      * CANCEL MODE MAP EVENT HANDLERS
      */
     export type GlobalCancelEventHandler = (e: { map: L.Map }) => void;
+
+    /**
+     * ERROR MAP EVENT HANDLERS
+     */
+    export type ErrorEventHandler = (e: { message: string, source: string, payload: any }) => void;
   }
 }

@@ -604,6 +604,8 @@ Edit.Line = Edit.extend({
 
     // update coord
     const parent = indexPath.length > 1 ? get(coords, parentPath) : coords;
+    // Can be removed after https://github.com/Leaflet/Leaflet/issues/9689 is fixed
+    latlng.alt = parent[index].alt;
     parent.splice(index, 1, latlng);
 
     // set new coords on layer
@@ -663,6 +665,7 @@ Edit.Line = Edit.extend({
   },
   _onMarkerDragStart(e) {
     const marker = e.target;
+    this._preventRenderingMarkers(true);
 
     // When intersection is true while calling enable(), the cachedColor is already set
     if (!this.cachedColor) {
@@ -773,6 +776,7 @@ Edit.Line = Edit.extend({
   },
   _onMarkerDragEnd(e) {
     const marker = e.target;
+    this._preventRenderingMarkers(false);
 
     if (!this._vertexValidationDragEnd(marker)) {
       return;
