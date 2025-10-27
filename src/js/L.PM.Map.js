@@ -43,7 +43,7 @@ const Map = L.Class.extend({
 
     this.Keyboard._initKeyListener(map);
   },
-  // eslint-disable-next-line default-param-last
+
   setLang(lang = 'en', override, fallback = 'en') {
     // Normalize the language code to lowercase and trim any whitespace
     lang = lang.trim().toLowerCase();
@@ -96,7 +96,7 @@ const Map = L.Class.extend({
   controlsVisible() {
     return this.Toolbar.isVisible;
   },
-  // eslint-disable-next-line default-param-last
+
   enableDraw(shape = 'Polygon', options) {
     // backwards compatible, remove after 3.0
     if (shape === 'Poly') {
