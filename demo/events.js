@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 const map = L.map('map').setView([39.74739, -105], 13);
 
 map.pm.addControls();

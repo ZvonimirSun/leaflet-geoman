@@ -237,7 +237,6 @@ export function prioritiseSort(key, _sortingOrder, order = 'asc') {
       keyB = getShape(b.layer).toLowerCase();
       if (!keyA || !keyB) return 0;
     } else {
-      /* eslint-disable-next-line no-prototype-builtins */
       if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) return 0;
       keyA = a[key].toLowerCase();
       keyB = b[key].toLowerCase();
