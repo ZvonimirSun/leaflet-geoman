@@ -7,14 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.19.0] - 2025-12-12
+
+### Added
+
+- Add `exitModeOnEscape` option to exit active modes via Escape key (#1612)
+- Add `finishOnEnter` option to finish drawing shapes with Enter key (#1612)
+- Add Vitest for unit testing and coverage support (#1606)
+
 ### Changed
 
 - Bump turf to 7.x and fix intersection logic (#1600)
-- Bump dependencies
+- Bump dependencies (#1599, #1605, #1606)
+- Bump CI actions: actions/cache to v5, actions/checkout to v6, actions/setup-node to v6, softprops/action-gh-release to v2 (#1607, #1608, #1609, #1610)
 
 ### Fixed
 
-- Fix removing event listener for text hint marker (#1604)
+- Fix CSS control border radius (#1561)
+- Fix removing empty text with click on control (#1570)
+- Prevent malformed HTML resulting from SVG file (#1577)
+- Prevent the creation of an additional Marker when dragging a Marker in edit mode (#1569)
+- After editing a vertex, alt-coordinate should be kept (#1578)
+- Fix unmounting custom controls (#1575)
+- Fix vertex dragging with markerlimit (#1579)
+- Fix TypeScript definitions (pathOptions, optional options, Measurement) (#1580, #1581)
+- Fix event listener for hint marker display (#1604)
 
 ## [2.18.3] - 2024
 
@@ -82,7 +99,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial tracked release
 
-[Unreleased]: https://github.com/geoman-io/leaflet-geoman/compare/v2.18.3...HEAD
+[Unreleased]: https://github.com/geoman-io/leaflet-geoman/compare/v2.19.0...HEAD
+[2.19.0]: https://github.com/geoman-io/leaflet-geoman/compare/v2.18.3...v2.19.0
 [2.18.3]: https://github.com/geoman-io/leaflet-geoman/compare/v2.18.2...v2.18.3
 [2.18.2]: https://github.com/geoman-io/leaflet-geoman/compare/v2.18.1...v2.18.2
 [2.18.1]: https://github.com/geoman-io/leaflet-geoman/compare/v2.18.0...v2.18.1

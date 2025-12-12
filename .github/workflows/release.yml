@@ -66,6 +66,7 @@ jobs:
         with:
           name: ${{ steps.version.outputs.version }}
           tag_name: v${{ steps.version.outputs.version }}
+          generate_release_notes: true
           token: ${{ secrets.GEOMAN_RELEASE_TOKEN }}
           files: |
             ${{env.FILE_NAME_PREFIX}}-${{ steps.version.outputs.version }}.tgz
