@@ -1243,6 +1243,12 @@ declare module 'leaflet' {
 
       /** Changing the cut behavior to use a circle instead of a polygon. Default: false ⭐ */
       cutAsCircle?: boolean;
+
+      /** Enable exiting active modes (draw, edit, drag, rotate, remove, cut) by pressing the Escape key. Default: false */
+      exitModeOnEscape?: boolean;
+
+      /** Enable finishing drawing shapes (Line, Polygon, Cut) by pressing the Enter key when enough vertices are placed. Default: false */
+      finishOnEnter?: boolean;
     }
 
     interface PMDrawMap {
