@@ -42,10 +42,8 @@ describe('Shows Tooltips', () => {
 
     cy.get(mapSelector).click(290, 250);
 
-    cy.wait(500);
-
+    cy.get('.leaflet-tooltip-bottom').should('have.length', 1);
     cy.get('.leaflet-tooltip-bottom').then((el) => {
-      expect(el.length).to.eq(1);
       expect(el).to.have.text('Click to place marker');
     });
 
@@ -139,12 +137,11 @@ describe('Shows Tooltips', () => {
     });
 
     // draw a polygon
-    cy.get(mapSelector)
-      .click(290, 250)
-      .click(300, 50)
-      .click(350, 50)
-      .click(350, 150)
-      .click(400, 150);
+    cy.get(mapSelector).click(290, 250);
+    cy.get(mapSelector).click(300, 50);
+    cy.get(mapSelector).click(350, 50);
+    cy.get(mapSelector).click(350, 150);
+    cy.get(mapSelector).click(400, 150);
 
     cy.get('.leaflet-tooltip-bottom').then((el) => {
       expect(el).to.have.text('Click first marker to finish');
@@ -207,8 +204,7 @@ describe('Shows Tooltips', () => {
 
     cy.get(mapSelector).click(290, 250);
 
-    cy.wait(500);
-
+    cy.get('.leaflet-tooltip-bottom').should('exist');
     cy.get('.leaflet-tooltip-bottom').then((el) => {
       expect(el).to.have.text('Presiona para colocar un marcador de círculo');
     });
@@ -221,7 +217,9 @@ describe('Shows Tooltips', () => {
   it('Reset tooltip after remove vertex', () => {
     cy.toolbarButton('polygon').click();
 
-    cy.get(mapSelector).click(90, 250).click(100, 350).click(200, 350);
+    cy.get(mapSelector).click(90, 250);
+    cy.get(mapSelector).click(100, 350);
+    cy.get(mapSelector).click(200, 350);
 
     cy.get('.leaflet-tooltip-bottom').then((el) => {
       expect(el).to.have.text('Click first marker to finish');
@@ -270,6 +268,25 @@ describe('Shows Tooltips', () => {
       );
       expect(L.PM.Utils.getTranslation('tooltips.mytext')).to.eq(
         'tooltips.mytext'
+      );
+    });
+  });
+
+  it('does not incorrectly match 3-letter language codes to 2-letter codes', () => {
+    // Regression test for https://github.com/geoman-io/leaflet-geoman/issues/1551
+    // ISO 639-3 codes like 'jam' (Jamaican Creole) should not match 'ja' (Japanese)
+    cy.window().then(({ map, L }) => {
+      // Set to a 3-letter code that doesn't exist - should NOT fall back to 'ja'
+      map.pm.setLang('jam');
+
+      // Since 'jam' doesn't exist in translations and shouldn't match 'ja',
+      // the activeLang should be 'jam' (not 'ja')
+      expect(L.PM.activeLang).to.eq('jam');
+
+      // Verify it's not showing Japanese by checking the actual translation falls back to English
+      // (since 'jam' has no translations but English is the default fallback)
+      expect(L.PM.Utils.getTranslation('tooltips.placeMarker')).to.eq(
+        'Click to place marker'
       );
     });
   });

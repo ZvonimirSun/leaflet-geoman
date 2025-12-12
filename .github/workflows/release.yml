@@ -72,7 +72,7 @@ jobs:
             LICENSE
 
       - name: Publish to NPM
-        run: npm publish --no-git-checks
+        run: npm publish --no-git-checks --provenance --access public
 
       - name: Merge changes from develop into master
         # Only run when a tag triggers the workflow
