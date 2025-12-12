@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@types/leaflet": "^1.9.21",
+    "@vitest/coverage-v8": "^4.0.15",
     "cross-env": "^10.1.0",
     "cypress": "^15.7.1",
     "esbuild": "^0.27.1",
@@ -42,7 +43,8 @@
     "lint-staged": "^16.2.7",
     "prettier": "3.7.4",
     "prosthetic-hand": "1.3.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.15"
   },
   "peerDependencies": {
     "leaflet": "^1.2.0"
@@ -52,6 +54,10 @@
     "dev": "cross-env DEV=true node bundle.mjs",
     "build": "node bundle.mjs",
     "test": "cypress run --browser chrome",
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest",
+    "test:unit:coverage": "vitest run --coverage",
+    "test:all": "npm run test:unit && npm run test",
     "cypress": "cypress open",
     "prepare": "npm run build && husky",
     "eslint-check": "eslint --print-config . | eslint-config-prettier-check",

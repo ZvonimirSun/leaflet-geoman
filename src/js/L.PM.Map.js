@@ -7,6 +7,7 @@ import GlobalRotateMode from './Mixins/Modes/Mode.Rotate';
 import EventMixin from './Mixins/Events';
 import createKeyboardMixins from './Mixins/Keyboard';
 import { getRenderer } from './helpers';
+import { resolveLanguageCode } from './helpers/language';
 
 const Map = L.Class.extend({
   includes: [
@@ -45,35 +46,8 @@ const Map = L.Class.extend({
   },
 
   setLang(lang = 'en', override, fallback = 'en') {
-    // Normalize the language code to lowercase and trim any whitespace
-    lang = lang.trim().toLowerCase();
-
-    // First, check if the exact language code exists in translations
-    // This handles both 2-letter (ISO 639-1) and 3-letter (ISO 639-3) codes
-    if (!translations[lang]) {
-      // Handle formats like 'fr-FR', 'fr-fr', 'fr_FR', 'pt_BR', etc.
-      const normalizedLang = lang.replace(/[-_\s]/g, '_');
-      // Match language codes: 2-3 letter primary tag, optionally followed by separator and 2-3 letter region
-      const match = normalizedLang.match(/^([a-z]{2,3})(?:_([a-z]{2,3}))?$/);
-
-      if (match) {
-        // Construct potential keys to search for in the translations object
-        const potentialKeys = [];
-        if (match[2]) {
-          potentialKeys.push(`${match[1]}_${match[2]}`); // e.g., 'pt_br'
-        }
-        potentialKeys.push(match[1]); // e.g., 'pt'
-
-        // Search through the translations object for a matching key
-        for (const key of potentialKeys) {
-          if (translations[key]) {
-            lang = key; // Set lang to the matching key
-            break; // Exit the loop once a match is found
-          }
-        }
-      }
-      // If no match found, lang remains as-is (will use fallback mechanism or custom translation)
-    }
+    // Resolve the language code to a translation key
+    lang = resolveLanguageCode(lang, translations);
 
     const oldLang = L.PM.activeLang;
     if (override) {
