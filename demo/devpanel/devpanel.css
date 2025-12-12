@@ -1,0 +1,671 @@
+/**
+ * DevPanel Styles
+ * Dark theme developer panel for Leaflet-Geoman
+ */
+
+/* Main Container */
+.devpanel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
+  transition: width 0.2s ease;
+  overflow: hidden;
+}
+
+.devpanel.collapsed {
+  width: 40px !important;
+}
+
+.devpanel.collapsed .devpanel-title,
+.devpanel.collapsed .devpanel-content {
+  display: none;
+}
+
+/* Header */
+.devpanel-header {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background: #333;
+  border-bottom: 1px solid #444;
+  min-height: 40px;
+  box-sizing: border-box;
+}
+
+.devpanel-toggle {
+  background: none;
+  border: none;
+  color: #d4d4d4;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 14px;
+  border-radius: 3px;
+  transition: background 0.15s;
+}
+
+.devpanel-toggle:hover {
+  background: #444;
+}
+
+.devpanel-title {
+  margin-left: 8px;
+  font-weight: 600;
+  color: #569cd6;
+  white-space: nowrap;
+}
+
+/* Content Area */
+.devpanel-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Scrollbar styling */
+.devpanel-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.devpanel-content::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+.devpanel-content::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 4px;
+}
+
+.devpanel-content::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Module Section */
+.devpanel-module {
+  border-bottom: 1px solid #333;
+}
+
+.devpanel-module-header {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  cursor: pointer;
+  background: #252526;
+  transition: background 0.15s;
+  user-select: none;
+}
+
+.devpanel-module-header:hover {
+  background: #2a2d2e;
+}
+
+.devpanel-module-icon {
+  width: 16px;
+  font-size: 10px;
+  color: #888;
+}
+
+.devpanel-module-title {
+  font-weight: 500;
+  color: #dcdcaa;
+}
+
+.devpanel-module-content {
+  padding: 12px;
+  background: #1e1e1e;
+}
+
+/* Buttons */
+.devpanel-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  background: #0e639c;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 11px;
+  font-family: inherit;
+  transition: background 0.15s;
+  margin: 2px;
+}
+
+.devpanel-btn:hover {
+  background: #1177bb;
+}
+
+.devpanel-btn:active {
+  background: #0d5a8c;
+}
+
+.devpanel-btn.secondary {
+  background: #3c3c3c;
+}
+
+.devpanel-btn.secondary:hover {
+  background: #4c4c4c;
+}
+
+.devpanel-btn.danger {
+  background: #a31515;
+}
+
+.devpanel-btn.danger:hover {
+  background: #c42b2b;
+}
+
+.devpanel-btn.success {
+  background: #388a34;
+}
+
+.devpanel-btn.success:hover {
+  background: #4caf50;
+}
+
+.devpanel-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.devpanel-btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 8px 0;
+}
+
+/* Input fields */
+.devpanel-input {
+  width: 100%;
+  padding: 6px 8px;
+  background: #3c3c3c;
+  border: 1px solid #555;
+  border-radius: 3px;
+  color: #d4d4d4;
+  font-family: inherit;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+.devpanel-input:focus {
+  outline: none;
+  border-color: #0e639c;
+}
+
+.devpanel-textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 8px;
+  background: #3c3c3c;
+  border: 1px solid #555;
+  border-radius: 3px;
+  color: #d4d4d4;
+  font-family: inherit;
+  font-size: 11px;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.devpanel-textarea:focus {
+  outline: none;
+  border-color: #0e639c;
+}
+
+/* Labels */
+.devpanel-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #9cdcfe;
+  font-size: 11px;
+}
+
+.devpanel-field {
+  margin-bottom: 12px;
+}
+
+/* Toggle Switch */
+.devpanel-toggle-switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+}
+
+.devpanel-toggle-switch label {
+  color: #d4d4d4;
+  cursor: pointer;
+}
+
+.devpanel-switch {
+  position: relative;
+  width: 36px;
+  height: 20px;
+}
+
+.devpanel-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.devpanel-switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #555;
+  transition: 0.2s;
+  border-radius: 10px;
+}
+
+.devpanel-switch-slider:before {
+  position: absolute;
+  content: '';
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.2s;
+  border-radius: 50%;
+}
+
+.devpanel-switch input:checked + .devpanel-switch-slider {
+  background-color: #0e639c;
+}
+
+.devpanel-switch input:checked + .devpanel-switch-slider:before {
+  transform: translateX(16px);
+}
+
+/* Select */
+.devpanel-select {
+  width: 100%;
+  padding: 6px 8px;
+  background: #3c3c3c;
+  border: 1px solid #555;
+  border-radius: 3px;
+  color: #d4d4d4;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.devpanel-select:focus {
+  outline: none;
+  border-color: #0e639c;
+}
+
+/* JSON Display */
+.devpanel-json {
+  background: #252526;
+  border: 1px solid #333;
+  border-radius: 3px;
+  padding: 8px;
+  font-size: 11px;
+  line-height: 1.4;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.devpanel-json .key {
+  color: #9cdcfe;
+}
+
+.devpanel-json .string {
+  color: #ce9178;
+}
+
+.devpanel-json .number {
+  color: #b5cea8;
+}
+
+.devpanel-json .boolean {
+  color: #569cd6;
+}
+
+.devpanel-json .null {
+  color: #569cd6;
+}
+
+/* Event Log */
+.devpanel-event-log {
+  max-height: 300px;
+  overflow-y: auto;
+  background: #252526;
+  border: 1px solid #333;
+  border-radius: 3px;
+}
+
+.devpanel-event-item {
+  padding: 6px 8px;
+  border-bottom: 1px solid #333;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.devpanel-event-item:hover {
+  background: #2a2d2e;
+}
+
+.devpanel-event-item:last-child {
+  border-bottom: none;
+}
+
+.devpanel-event-name {
+  color: #dcdcaa;
+  font-weight: 500;
+}
+
+.devpanel-event-time {
+  color: #6a9955;
+  font-size: 10px;
+  margin-left: 8px;
+}
+
+.devpanel-event-details {
+  display: none;
+  margin-top: 6px;
+  padding: 6px;
+  background: #1e1e1e;
+  border-radius: 3px;
+  font-size: 10px;
+}
+
+.devpanel-event-item.expanded .devpanel-event-details {
+  display: block;
+}
+
+/* Layer List */
+.devpanel-layer-list {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.devpanel-layer-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  background: #252526;
+  border: 1px solid #333;
+  border-radius: 3px;
+  margin-bottom: 4px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.devpanel-layer-item:hover {
+  background: #2a2d2e;
+  border-color: #0e639c;
+}
+
+.devpanel-layer-item.highlighted {
+  border-color: #569cd6;
+  background: #264f78;
+}
+
+.devpanel-layer-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.devpanel-layer-type {
+  color: #4ec9b0;
+  font-weight: 500;
+}
+
+.devpanel-layer-meta {
+  color: #888;
+  font-size: 10px;
+  margin-top: 2px;
+}
+
+.devpanel-layer-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.devpanel-layer-actions .devpanel-btn {
+  padding: 3px 6px;
+  font-size: 10px;
+}
+
+/* Status badges */
+.devpanel-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 500;
+  margin-left: 4px;
+}
+
+.devpanel-badge.active {
+  background: #388a34;
+  color: #fff;
+}
+
+.devpanel-badge.inactive {
+  background: #555;
+  color: #aaa;
+}
+
+.devpanel-badge.warning {
+  background: #856404;
+  color: #fff;
+}
+
+.devpanel-badge.error {
+  background: #a31515;
+  color: #fff;
+}
+
+/* Mode indicator */
+.devpanel-mode-indicator {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.devpanel-mode {
+  padding: 4px 8px;
+  background: #333;
+  border-radius: 3px;
+  font-size: 11px;
+  color: #888;
+}
+
+.devpanel-mode.active {
+  background: #0e639c;
+  color: #fff;
+}
+
+/* Divider */
+.devpanel-divider {
+  height: 1px;
+  background: #333;
+  margin: 12px 0;
+}
+
+/* Empty state */
+.devpanel-empty {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+  font-style: italic;
+}
+
+/* Filter pills */
+.devpanel-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.devpanel-filter {
+  padding: 3px 8px;
+  background: #333;
+  border: 1px solid #444;
+  border-radius: 12px;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.devpanel-filter:hover {
+  background: #444;
+}
+
+.devpanel-filter.active {
+  background: #0e639c;
+  border-color: #0e639c;
+  color: #fff;
+}
+
+/* Toast notifications */
+.devpanel-toast {
+  position: fixed;
+  bottom: 20px;
+  right: 380px;
+  padding: 10px 16px;
+  background: #333;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 12px;
+  z-index: 10001;
+  animation: devpanel-toast-in 0.3s ease;
+}
+
+.devpanel-toast.success {
+  background: #388a34;
+}
+
+.devpanel-toast.error {
+  background: #a31515;
+}
+
+@keyframes devpanel-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Options table */
+.devpanel-options-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.devpanel-options-table td {
+  padding: 4px 8px;
+  border-bottom: 1px solid #333;
+}
+
+.devpanel-options-table td:first-child {
+  color: #9cdcfe;
+  width: 50%;
+}
+
+.devpanel-options-table td:last-child {
+  color: #ce9178;
+}
+
+/* Collapsible sections within modules */
+.devpanel-section {
+  margin-bottom: 12px;
+}
+
+.devpanel-section-title {
+  display: flex;
+  align-items: center;
+  padding: 6px 0;
+  cursor: pointer;
+  color: #569cd6;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.devpanel-section-title:hover {
+  color: #6eb3f7;
+}
+
+.devpanel-section-icon {
+  width: 14px;
+  font-size: 8px;
+  color: #888;
+}
+
+/* Counter badge */
+.devpanel-counter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  background: #555;
+  border-radius: 9px;
+  font-size: 10px;
+  color: #d4d4d4;
+  margin-left: 6px;
+}
+
+/* File input styling */
+.devpanel-file-input {
+  display: none;
+}
+
+.devpanel-file-label {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  background: #3c3c3c;
+  color: #d4d4d4;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 11px;
+  transition: background 0.15s;
+}
+
+.devpanel-file-label:hover {
+  background: #4c4c4c;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .devpanel {
+    width: 100% !important;
+    height: 50vh;
+    top: auto;
+    bottom: 0;
+    right: 0;
+  }
+
+  .devpanel.collapsed {
+    height: 40px;
+  }
+}
