@@ -16,10 +16,25 @@
     "ui-leaflet-draw"
   ],
   "files": [
-    "dist"
+    "dist/leaflet-geoman.js",
+    "dist/leaflet-geoman.min.js",
+    "dist/leaflet-geoman.css",
+    "dist/leaflet-geoman.d.ts",
+    "dist/leaflet-geoman.js.map",
+    "dist/leaflet-geoman.css.map"
   ],
   "main": "dist/leaflet-geoman.js",
+  "module": "dist/leaflet-geoman.js",
   "types": "dist/leaflet-geoman.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/leaflet-geoman.d.ts",
+      "import": "./dist/leaflet-geoman.js",
+      "require": "./dist/leaflet-geoman.js",
+      "default": "./dist/leaflet-geoman.js"
+    },
+    "./dist/leaflet-geoman.css": "./dist/leaflet-geoman.css"
+  },
   "dependencies": {
     "@turf/boolean-contains": "^7.3.1",
     "@turf/kinks": "^7.3.1",
@@ -49,6 +64,9 @@
   "peerDependencies": {
     "leaflet": "^1.2.0"
   },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "start": "npm run dev",
     "dev": "cross-env DEV=true node bundle.mjs",
@@ -63,7 +81,8 @@
     "eslint-check": "eslint --print-config . | eslint-config-prettier-check",
     "eslint": "eslint \"{src,demo}/**/*.js\" --fix ",
     "prettier": "prettier --write \"{src,demo}/**/*.{js,css}\" --log-level=warn",
-    "lint": "npm run eslint && npm run prettier"
+    "lint": "npm run eslint && npm run prettier",
+    "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",

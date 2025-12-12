@@ -46,37 +46,38 @@ Please see the existing [Feature Requests here](https://github.com/geoman-io/lea
 Clone the repository and then install all npm packages:
 
 ```
-pnpm install
+npm install
 ```
 
 Compile and run `dev` watch version:
 
 ```
-pnpm run start
+npm run start
 ```
 
 Compile and run `build` version:
 
 ```
-pnpm run prepare
+npm run prepare
 ```
 
-Run cypress test:
+Run tests:
 
 ```
-pnpm run test
+npm run test        # E2E tests (Cypress)
+npm run test:unit   # Unit tests (Vitest)
 ```
 
 Open cypress window:
 
 ```
-pnpm run cypress
+npm run cypress
 ```
 
 Open eslint check:
 
 ```
-pnpm run lint
+npm run lint
 ```
 
 Take a look into [CONTRIBUTING](./CONTRIBUTING.md)
