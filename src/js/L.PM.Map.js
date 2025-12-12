@@ -40,6 +40,7 @@ const Map = L.Class.extend({
         markerPane: 'markerPane',
       },
       draggable: true,
+      exitModeOnEscape: false,
     };
 
     this.Keyboard._initKeyListener(map);

@@ -9,6 +9,46 @@ const createKeyboardMixins = () => ({
     // clean up global listeners when current map instance is destroyed
     map.once('unload', this._unbindKeyListenerEvents, this);
   },
+  _handleEscapeKey() {
+    const pm = this.map.pm;
+    const globalOptions = pm.getGlobalOptions();
+
+    // Only handle Escape if the option is enabled
+    if (!globalOptions.exitModeOnEscape) {
+      return;
+    }
+
+    // Disable all active modes
+    // 1. Disable draw mode if active
+    if (pm.globalDrawModeEnabled()) {
+      pm.disableDraw();
+    }
+
+    // 2. Disable global edit mode if active
+    if (pm.globalEditModeEnabled()) {
+      pm.disableGlobalEditMode();
+    }
+
+    // 3. Disable global drag mode if active
+    if (pm.globalDragModeEnabled()) {
+      pm.disableGlobalDragMode();
+    }
+
+    // 4. Disable global removal mode if active
+    if (pm.globalRemovalModeEnabled()) {
+      pm.disableGlobalRemovalMode();
+    }
+
+    // 5. Disable global rotate mode if active
+    if (pm.globalRotateModeEnabled()) {
+      pm.disableGlobalRotateMode();
+    }
+
+    // 6. Disable global cut mode if active
+    if (pm.globalCutModeEnabled()) {
+      pm.disableGlobalCutMode();
+    }
+  },
   _unbindKeyListenerEvents() {
     L.DomEvent.off(document, 'keydown keyup', this._onKeyListener, this);
     L.DomEvent.off(window, 'blur', this._onBlur, this);
@@ -27,6 +67,11 @@ const createKeyboardMixins = () => ({
     this._lastEvents.current = data;
 
     this.map.pm._fireKeyeventEvent(e, e.type, focusOn);
+
+    // Handle Escape key to exit active modes on keydown
+    if (e.type === 'keydown' && e.key === 'Escape') {
+      this._handleEscapeKey();
+    }
   },
   _onBlur(e) {
     e.altKey = false;
