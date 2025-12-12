@@ -41,6 +41,7 @@ const Map = L.Class.extend({
       },
       draggable: true,
       exitModeOnEscape: false,
+      finishOnEnter: false,
     };
 
     this.Keyboard._initKeyListener(map);
