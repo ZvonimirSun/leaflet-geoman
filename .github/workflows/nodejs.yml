@@ -2,6 +2,10 @@ name: Tests
 
 on: [push, pull_request]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   unit-tests:
     name: Unit Tests (Node ${{ matrix.node-version }})

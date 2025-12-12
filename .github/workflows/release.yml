@@ -10,6 +10,10 @@ permissions:
   id-token: write
   contents: write
 
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 env:
   FILE_NAME_PREFIX: geoman-io-leaflet-geoman
 
