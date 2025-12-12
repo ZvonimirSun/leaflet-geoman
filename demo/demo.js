@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 const tiles1 = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19,
   attribution:
@@ -50,7 +49,6 @@ const m1 = L.circleMarker([51.50313, -0.091223], { radius: 10 });
 const m2 = L.marker([51.50614, -0.0989]);
 const m3 = L.marker([51.50915, -0.096112], { pmIgnore: true });
 
-// eslint-disable-next-line no-unused-vars
 const mGroup = L.layerGroup([m1, m2, m3]).addTo(map2);
 // mGroup.pm.enable();
 

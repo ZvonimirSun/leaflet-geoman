@@ -1,0 +1,79 @@
+name: Bug Report
+title: "Bug: "
+description: Bug Report
+labels: ["bug", "needs triage"]
+body:
+  - type: input
+    id: web-browser
+    attributes:
+      label: Web Browser (with version)
+      description: Web Browser where the error occur on (Chrome, Firefox, Safari, etc.)
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: OS/Platform (with version)
+      description: OS/Platform where the error occur on (Windows, MacOS, Linux, etc.)
+    validations:
+      required: true
+  - type: input
+    id: leaflet-version
+    attributes:
+      label: Leaflet version
+      description: You can get the Leaflet version via `L.version`
+    validations:
+      required: true
+  - type: input
+    id: geoman-version
+    attributes:
+      label: Geoman version
+      description: You can get the Geoman version via `L.PM.version`
+    validations:
+      required: true
+
+  - type: checkboxes
+    attributes:
+      label: Geoman Pro
+      options:
+        - label: I'm using Geoman Pro
+
+  - type: input
+    attributes:
+      label: Minimal example reproducing the issue
+      description: |
+        Please create an example using https://plnkr.co/edit/3XhAuzVQ2CMyNFSr or any other suitable online code editor.
+        **This example should be as simple as possible, and should not rely on any third-party code!**
+      placeholder: Link to your example here
+    validations:
+      required: false
+
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: >
+        How do you trigger this bug? Please walk us through it step by step.
+      placeholder: |
+        1. Go to [...]
+        2. Click on [...]
+        3. See error [...]
+    validations:
+      required: false
+
+  - type: textarea
+    attributes:
+      label: Expected behavior
+      description: >
+        A clear and concise description of what you expected to happen.
+        Provide additional context if necessary (screenshots, video, links, etc.).
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Current behavior
+      description: >
+        A clear and concise description of what is actually happening.
+        Provide additional context if necessary (screenshots, video, links, etc.).
+    validations:
+      required: true

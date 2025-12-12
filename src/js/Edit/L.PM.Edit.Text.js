@@ -56,7 +56,9 @@ Edit.Text = Edit.extend({
     L.DomEvent.off(this.textArea, 'input', this._autoResize, this);
     L.DomEvent.off(this.textArea, 'focus', this._focusChange, this);
     L.DomEvent.off(this.textArea, 'blur', this._focusChange, this);
-    L.DomEvent.off(document, 'click', this._documentClick, this);
+    document.removeEventListener('click', this._documentClickThis, {
+      capture: true,
+    });
 
     this._focusChange();
     this.textArea.readOnly = true;
@@ -139,7 +141,11 @@ Edit.Text = Edit.extend({
     // we need this timeout because else the place click event is triggered here too.
     setTimeout(() => {
       if (this.enabled()) {
-        L.DomEvent.on(document, 'click', this._documentClick, this);
+        this._documentClickThis =
+          this._documentClickThis || this._documentClick.bind(this);
+        document.addEventListener('click', this._documentClickThis, {
+          capture: true,
+        });
       }
     }, 100);
   },

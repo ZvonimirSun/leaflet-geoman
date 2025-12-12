@@ -1,0 +1,9 @@
+name: Feature Request
+title: "Feature Request: "
+description: Request a feature that you are missing
+body:
+  - type: textarea
+    id: textarea-1
+    attributes:
+      label: Description
+      description: Describe your usecase and add more information like screenshots, links, etc.

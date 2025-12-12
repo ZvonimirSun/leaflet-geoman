@@ -604,6 +604,8 @@ Edit.Line = Edit.extend({
 
     // update coord
     const parent = indexPath.length > 1 ? get(coords, parentPath) : coords;
+    // Can be removed after https://github.com/Leaflet/Leaflet/issues/9689 is fixed
+    latlng.alt = parent[index].alt;
     parent.splice(index, 1, latlng);
 
     // set new coords on layer
@@ -636,33 +638,48 @@ Edit.Line = Edit.extend({
     const prevLine = L.polyline([prevMarker.getLatLng(), marker.getLatLng()]);
     const nextLine = L.polyline([marker.getLatLng(), nextMarker.getLatLng()]);
 
-    let prevLineIntersectionLen = lineIntersect(
+    const prevLineIntersection = lineIntersect(
       this._layer.toGeoJSON(15),
       prevLine.toGeoJSON(15)
-    ).features.length;
-    let nextLineIntersectionLen = lineIntersect(
+    );
+
+    // Filter out intersections that are the markers themselves
+    const prevLineIntersectionLen = prevLineIntersection.features.filter(
+      (f) => {
+        const coords = f.geometry.coordinates;
+        const latlng = L.latLng(coords[1], coords[0]);
+        return (
+          !latlng.equals(prevMarker.getLatLng()) &&
+          !latlng.equals(marker.getLatLng())
+        );
+      }
+    ).length;
+
+    const nextLineIntersection = lineIntersect(
       this._layer.toGeoJSON(15),
       nextLine.toGeoJSON(15)
-    ).features.length;
+    );
 
-    // The first and last line has one intersection fewer because they are not connected
-    if (marker.getLatLng() === this._markers[0][0].getLatLng()) {
-      nextLineIntersectionLen += 1;
-    } else if (
-      marker.getLatLng() ===
-      this._markers[0][this._markers[0].length - 1].getLatLng()
-    ) {
-      prevLineIntersectionLen += 1;
-    }
+    // Filter out intersections that are the markers themselves
+    const nextLineIntersectionLen = nextLineIntersection.features.filter(
+      (f) => {
+        const coords = f.geometry.coordinates;
+        const latlng = L.latLng(coords[1], coords[0]);
+        return (
+          !latlng.equals(nextMarker.getLatLng()) &&
+          !latlng.equals(marker.getLatLng())
+        );
+      }
+    ).length;
 
-    // <= 2 the start and end point of the line always intersecting because they have the same coords.
-    if (prevLineIntersectionLen <= 2 && nextLineIntersectionLen <= 2) {
+    if (prevLineIntersectionLen < 1 && nextLineIntersectionLen < 1) {
       return false;
     }
     return true;
   },
   _onMarkerDragStart(e) {
     const marker = e.target;
+    this._preventRenderingMarkers(true);
 
     // When intersection is true while calling enable(), the cachedColor is already set
     if (!this.cachedColor) {
@@ -773,6 +790,7 @@ Edit.Line = Edit.extend({
   },
   _onMarkerDragEnd(e) {
     const marker = e.target;
+    this._preventRenderingMarkers(false);
 
     if (!this._vertexValidationDragEnd(marker)) {
       return;
@@ -782,7 +800,8 @@ Edit.Line = Edit.extend({
 
     // if self intersection is not allowed but this edit caused a self intersection,
     // reset and cancel; do not fire events
-    let intersection = !this.options.allowSelfIntersection && this.hasSelfIntersection();
+    let intersection =
+      !this.options.allowSelfIntersection && this.hasSelfIntersection();
     if (
       intersection &&
       this.options.allowSelfIntersectionEdit &&
