@@ -369,7 +369,7 @@ Draw.CircleMarker = Draw.extend({
 
     // assign the coordinate of the click to the hintMarker, that's necessary for
     // mobile where the marker can't follow a cursor
-    if (!this._hintMarker._snapped) {
+    if (e?.latlng && !this._hintMarker._snapped) {
       this._hintMarker.setLatLng(e.latlng);
     }
 

@@ -109,13 +109,21 @@ const createKeyboardMixins = () => ({
     // Different shapes have different minimum vertex requirements
 
     // Shapes that don't support multi-vertex drawing
-    if (['Marker', 'CircleMarker', 'Circle', 'Text'].includes(activeShape)) {
+    if (['Marker', 'CircleMarker', 'Text'].includes(activeShape)) {
       return false;
     }
 
     // For Rectangle, check if drawing is in progress (has start point)
     if (activeShape === 'Rectangle') {
       return drawInstance._startMarker !== undefined;
+    }
+
+    // For Circle, check if center has been placed (added to layer group)
+    if (activeShape === 'Circle') {
+      return (
+        drawInstance._centerMarker &&
+        drawInstance._layerGroup?.hasLayer(drawInstance._centerMarker)
+      );
     }
 
     // For Line, Polygon, Cut - need to check vertex count
