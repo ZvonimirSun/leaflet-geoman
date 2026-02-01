@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.19.1] - 2026-02-01
+
+### Changed
+
+- Bump lodash from 4.17.21 to 4.17.23 (#1620)
+- Improve demo HTML with DevPanel, EventLogger, GeoJSONTools, LayerInspector, and StateInspector (#1613)
+
 ## [2.19.0] - 2025-12-12
 
 ### Added
@@ -99,7 +106,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial tracked release
 
-[Unreleased]: https://github.com/geoman-io/leaflet-geoman/compare/v2.19.0...HEAD
+[Unreleased]: https://github.com/geoman-io/leaflet-geoman/compare/v2.19.1...HEAD
+[2.19.1]: https://github.com/geoman-io/leaflet-geoman/compare/v2.19.0...v2.19.1
 [2.19.0]: https://github.com/geoman-io/leaflet-geoman/compare/v2.18.3...v2.19.0
 [2.18.3]: https://github.com/geoman-io/leaflet-geoman/compare/v2.18.2...v2.18.3
 [2.18.2]: https://github.com/geoman-io/leaflet-geoman/compare/v2.18.1...v2.18.2
