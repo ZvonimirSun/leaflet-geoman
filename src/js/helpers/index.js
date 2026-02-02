@@ -7,6 +7,21 @@ export function getTranslation(path) {
   return get(translations[lang], path) || get(translations.en, path) || path;
 }
 
+export function hasFinePointer() {
+  // If matchMedia is unavailable (older browsers), assume desktop
+  if (!window.matchMedia) {
+    return true;
+  }
+  // Only treat as touch device if coarse pointer is explicitly detected.
+  // This handles headless browsers (like Cypress) where neither fine nor coarse may match.
+  const hasCoarse = window.matchMedia('(pointer: coarse)').matches;
+  if (hasCoarse) {
+    return false;
+  }
+  // Default to desktop behavior
+  return true;
+}
+
 export function hasValues(list) {
   for (let i = 0; i < list.length; i += 1) {
     const item = list[i];

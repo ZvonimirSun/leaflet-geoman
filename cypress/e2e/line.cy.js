@@ -6,7 +6,8 @@ describe('Draw & Edit Line', () => {
   it('doesnt finish single point lines', () => {
     cy.toolbarButton('polyline').click();
 
-    cy.get(mapSelector).click(90, 250).click(90, 250);
+    cy.get(mapSelector).click(90, 250);
+    cy.get(mapSelector).click(90, 250);
 
     cy.toolbarButton('edit').click();
 
@@ -25,11 +26,10 @@ describe('Draw & Edit Line', () => {
 
     cy.toolbarButton('polyline').click();
 
-    cy.get(mapSelector)
-      .click(190, 250)
-      .click(200, 50)
-      .click(250, 50)
-      .click(250, 250);
+    cy.get(mapSelector).click(190, 250);
+    cy.get(mapSelector).click(200, 50);
+    cy.get(mapSelector).click(250, 50);
+    cy.get(mapSelector).click(250, 250);
 
     cy.hasVertexMarkers(5);
 
@@ -83,21 +83,19 @@ describe('Draw & Edit Line', () => {
       });
     });
 
-    cy.get(mapSelector)
-      .click(120, 150)
-      .click(120, 100)
-      .click(300, 100)
-      .click(300, 200)
-      .click(120, 150);
+    cy.get(mapSelector).click(120, 150);
+    cy.get(mapSelector).click(120, 100);
+    cy.get(mapSelector).click(300, 100);
+    cy.get(mapSelector).click(300, 200);
+    cy.get(mapSelector).click(120, 150);
 
     cy.toolbarButton('polygon').click();
 
-    cy.get(mapSelector)
-      .click(320, 150)
-      .click(320, 100)
-      .click(400, 100)
-      .click(400, 200)
-      .click(320, 150);
+    cy.get(mapSelector).click(320, 150);
+    cy.get(mapSelector).click(320, 100);
+    cy.get(mapSelector).click(400, 100);
+    cy.get(mapSelector).click(400, 200);
+    cy.get(mapSelector).click(320, 150);
 
     cy.toolbarButton('edit').click();
 
@@ -112,20 +110,19 @@ describe('Draw & Edit Line', () => {
     cy.hasLayers(1);
 
     // activate line drawing
+    cy.toolbarButton('polyline').click();
     cy.toolbarButton('polyline')
-      .click()
       .closest('.button-container')
       .should('have.class', 'active');
 
     cy.get(mapSelector).should('have.class', 'geoman-draw-cursor');
 
     // draw a line
-    cy.get(mapSelector)
-      .click(150, 250)
-      .click(160, 50)
-      .click(250, 50)
-      .click(250, 250)
-      .click(250, 250);
+    cy.get(mapSelector).click(150, 250);
+    cy.get(mapSelector).click(160, 50);
+    cy.get(mapSelector).click(250, 50);
+    cy.get(mapSelector).click(250, 250);
+    cy.get(mapSelector).click(250, 250);
 
     cy.get(mapSelector).should('not.have.class', 'geoman-draw-cursor');
 
@@ -169,18 +166,17 @@ describe('Draw & Edit Line', () => {
 
   it('hide middle markers', () => {
     // activate line drawing
+    cy.toolbarButton('polygon').click();
     cy.toolbarButton('polygon')
-      .click()
       .closest('.button-container')
       .should('have.class', 'active');
 
     // draw a line
-    cy.get(mapSelector)
-      .click(150, 250)
-      .click(160, 50)
-      .click(250, 50)
-      .click(250, 250)
-      .click(150, 250);
+    cy.get(mapSelector).click(150, 250);
+    cy.get(mapSelector).click(160, 50);
+    cy.get(mapSelector).click(250, 50);
+    cy.get(mapSelector).click(250, 250);
+    cy.get(mapSelector).click(150, 250);
 
     cy.window().then(({ map }) => {
       map.pm.setGlobalOptions({ hideMiddleMarkers: true });
@@ -199,13 +195,14 @@ describe('Draw & Edit Line', () => {
     cy.toolbarButton('polyline').click();
 
     // draw a line
-    cy.get(mapSelector)
-      .click(150, 250)
-      .click(160, 50)
-      .click(250, 50)
-      .click(250, 50);
+    cy.get(mapSelector).click(150, 250);
+    cy.get(mapSelector).click(160, 50);
+    cy.get(mapSelector).click(250, 50);
+    cy.get(mapSelector).click(250, 50);
 
-    cy.get(mapSelector).click(200, 200).click(250, 250).click(250, 250);
+    cy.get(mapSelector).click(200, 200);
+    cy.get(mapSelector).click(250, 250);
+    cy.get(mapSelector).click(250, 250);
 
     cy.window().then(({ map }) => {
       const latlng = map.pm.Draw.Line._hintMarker.getLatLng();
@@ -222,7 +219,8 @@ describe('Draw & Edit Line', () => {
 
     cy.toolbarButton('edit').click();
 
-    cy.get(mapSelector).rightclick(641, 462).rightclick(702, 267);
+    cy.get(mapSelector).rightclick(641, 462);
+    cy.get(mapSelector).rightclick(702, 267);
 
     cy.hasVertexMarkers(3);
     cy.hasMiddleMarkers(2);
@@ -232,20 +230,22 @@ describe('Draw & Edit Line', () => {
     cy.drawShape('MultiLineString');
 
     cy.toolbarButton('cut').click();
-    cy.get(mapSelector)
-      .click(394, 203)
-      .click(333, 77)
-      .click(607, 112)
-      .click(394, 203);
+    cy.get(mapSelector).click(394, 203);
+    cy.get(mapSelector).click(333, 77);
+    cy.get(mapSelector).click(607, 112);
+    cy.get(mapSelector).click(394, 203);
 
     cy.toolbarButton('edit').click();
-    cy.hasVertexMarkers(10);
-    cy.hasMiddleMarkers(6);
+    // Updated expectations after @turf/line-split 7.3.x changes:
+    // lineSplit now correctly includes intersection points on both resulting segments,
+    // producing 5 line segments (was 4) and 12 vertices (was 10)
+    cy.hasVertexMarkers(12);
+    cy.hasMiddleMarkers(7);
 
     cy.window().then(({ map }) => {
       const layers = map.pm.getGeomanDrawLayers();
       expect(layers.length).to.eq(1);
-      expect(layers[0].getLatLngs().length).to.eq(4);
+      expect(layers[0].getLatLngs().length).to.eq(5);
     });
   });
 
@@ -258,14 +258,15 @@ describe('Draw & Edit Line', () => {
     });
 
     cy.toolbarButton('polygon').click();
-    cy.get(mapSelector)
-      .click(150, 250)
-      .click(160, 50)
-      .click(250, 50)
-      .click(150, 250);
+    cy.get(mapSelector).click(150, 250);
+    cy.get(mapSelector).click(160, 50);
+    cy.get(mapSelector).click(250, 50);
+    cy.get(mapSelector).click(150, 250);
 
     cy.toolbarButton('polyline').click();
-    cy.get(mapSelector).click(350, 250).click(190, 160).click(190, 60);
+    cy.get(mapSelector).click(350, 250);
+    cy.get(mapSelector).click(190, 160);
+    cy.get(mapSelector).click(190, 60);
 
     cy.window().then(({ map }) => {
       map.pm.Draw.Line._finishShape();
@@ -282,22 +283,23 @@ describe('Draw & Edit Line', () => {
 
   it('vertex marker overlapping', () => {
     cy.toolbarButton('polyline').click();
-    cy.get(mapSelector)
-      .click(150, 250)
-      .click(160, 50)
-      .click(250, 50)
-      .click(155, 255);
+    cy.get(mapSelector).click(150, 250);
+    cy.get(mapSelector).click(160, 50);
+    cy.get(mapSelector).click(250, 50);
+    cy.get(mapSelector).click(155, 255);
 
     cy.hasVertexMarkers(0);
   });
 
   it('remove line if enabled', () => {
+    cy.toolbarButton('polyline').click();
     cy.toolbarButton('polyline')
-      .click()
       .closest('.button-container')
       .should('have.class', 'active');
 
-    cy.get(mapSelector).click(200, 200).click(250, 250).click(250, 250);
+    cy.get(mapSelector).click(200, 200);
+    cy.get(mapSelector).click(250, 250);
+    cy.get(mapSelector).click(250, 250);
 
     cy.toolbarButton('edit').click();
 
@@ -310,8 +312,8 @@ describe('Draw & Edit Line', () => {
   });
 
   it('change color of line while drawing', () => {
+    cy.toolbarButton('polyline').click();
     cy.toolbarButton('polyline')
-      .click()
       .closest('.button-container')
       .should('have.class', 'active');
 
@@ -335,12 +337,11 @@ describe('Draw & Edit Line', () => {
   it('remove vertex marker from MarkerLimit Cache', () => {
     cy.toolbarButton('polyline').click();
 
-    cy.get(mapSelector)
-      .click(120, 150)
-      .click(120, 100)
-      .click(300, 100)
-      .click(300, 200)
-      .click(120, 150);
+    cy.get(mapSelector).click(120, 150);
+    cy.get(mapSelector).click(120, 100);
+    cy.get(mapSelector).click(300, 100);
+    cy.get(mapSelector).click(300, 200);
+    cy.get(mapSelector).click(120, 150);
 
     cy.toolbarButton('edit').click();
 
@@ -355,6 +356,8 @@ describe('Draw & Edit Line', () => {
     cy.hasVertexMarkers(3);
     cy.hasMiddleMarkers(2);
 
+    // Allow time for UI to update before panning
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(20);
 
     cy.window().then(({ map }) => {
@@ -371,8 +374,8 @@ describe('Draw & Edit Line', () => {
     });
 
     // activate line drawing
+    cy.toolbarButton('polyline').click();
     cy.toolbarButton('polyline')
-      .click()
       .closest('.button-container')
       .should('have.class', 'active');
 
@@ -386,17 +389,19 @@ describe('Draw & Edit Line', () => {
     });
 
     // activate polyline drawing
+    cy.toolbarButton('polyline').click();
     cy.toolbarButton('polyline')
-      .click()
       .closest('.button-container')
       .should('have.class', 'active');
 
     // draw a polyline
-    cy.get(mapSelector).click(90, 250).click(150, 50).click(150, 50);
+    cy.get(mapSelector).click(90, 250);
+    cy.get(mapSelector).click(150, 50);
+    cy.get(mapSelector).click(150, 50);
 
     // enable global edit mode
+    cy.toolbarButton('edit').click();
     cy.toolbarButton('edit')
-      .click()
       .closest('.button-container')
       .should('have.class', 'active');
 
@@ -414,22 +419,26 @@ describe('Draw & Edit Line', () => {
     });
 
     // activate polyline drawing
+    cy.toolbarButton('polyline').click();
     cy.toolbarButton('polyline')
-      .click()
       .closest('.button-container')
       .should('have.class', 'active');
 
     // draw a polyline
-    cy.get(mapSelector).click(90, 250).click(150, 50).click(150, 50);
+    cy.get(mapSelector).click(90, 250);
+    cy.get(mapSelector).click(150, 50);
+    cy.get(mapSelector).click(150, 50);
 
     // activate polyline drawing
+    cy.toolbarButton('polyline').click();
     cy.toolbarButton('polyline')
-      .click()
       .closest('.button-container')
       .should('have.class', 'active');
 
     // draw a polyline
-    cy.get(mapSelector).click(150, 60).click(250, 50).click(250, 50);
+    cy.get(mapSelector).click(150, 60);
+    cy.get(mapSelector).click(250, 50);
+    cy.get(mapSelector).click(250, 50);
 
     cy.window().then(({ map }) => {
       const layer = map.pm.getGeomanDrawLayers()[1];
@@ -439,10 +448,9 @@ describe('Draw & Edit Line', () => {
 
     cy.toolbarButton('edit').click();
 
-    cy.get(mapSelector)
-      .trigger('mousedown', 150, 60, { which: 1 })
-      .trigger('mousemove', 150, 55, { which: 1 })
-      .trigger('mouseup', 150, 55, { which: 1 });
+    cy.get(mapSelector).trigger('mousedown', 150, 60, { which: 1 });
+    cy.get(mapSelector).trigger('mousemove', 150, 55, { which: 1 });
+    cy.get(mapSelector).trigger('mouseup', 150, 55, { which: 1 });
 
     cy.window().then(({ map }) => {
       const layer = map.pm.getGeomanDrawLayers()[1];

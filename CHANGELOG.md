@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.19.2] - 2026-02-02
+
+### Added
+
+- Add touch-friendly marker placement hints (#1627)
+
+### Changed
+
+- Replace ESLint and Prettier with oxlint and oxfmt (#1629)
+
+### Fixed
+
+- Allow polygon completion by self-snapping when snappable is false (#1628)
+- Update TypeScript definitions to match implementation (#1617)
+- Fix broken test for multilinecut
+
 ## [2.19.1] - 2026-02-01
 
 ### Changed
@@ -106,7 +122,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial tracked release
 
-[Unreleased]: https://github.com/geoman-io/leaflet-geoman/compare/v2.19.1...HEAD
+[Unreleased]: https://github.com/geoman-io/leaflet-geoman/compare/v2.19.2...HEAD
+[2.19.2]: https://github.com/geoman-io/leaflet-geoman/compare/v2.19.1...v2.19.2
 [2.19.1]: https://github.com/geoman-io/leaflet-geoman/compare/v2.19.0...v2.19.1
 [2.19.0]: https://github.com/geoman-io/leaflet-geoman/compare/v2.18.3...v2.19.0
 [2.18.3]: https://github.com/geoman-io/leaflet-geoman/compare/v2.18.2...v2.18.3
