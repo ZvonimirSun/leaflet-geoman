@@ -7,6 +7,21 @@ export function getTranslation(path) {
   return get(translations[lang], path) || get(translations.en, path) || path;
 }
 
+export function hasFinePointer() {
+  // If matchMedia is unavailable (older browsers), assume desktop
+  if (!window.matchMedia) {
+    return true;
+  }
+  // Only treat as touch device if coarse pointer is explicitly detected.
+  // This handles headless browsers (like Cypress) where neither fine nor coarse may match.
+  const hasCoarse = window.matchMedia('(pointer: coarse)').matches;
+  if (hasCoarse) {
+    return false;
+  }
+  // Default to desktop behavior
+  return true;
+}
+
 export function hasValues(list) {
   for (let i = 0; i < list.length; i += 1) {
     const item = list[i];
@@ -237,7 +252,6 @@ export function prioritiseSort(key, _sortingOrder, order = 'asc') {
       keyB = getShape(b.layer).toLowerCase();
       if (!keyA || !keyB) return 0;
     } else {
-      /* eslint-disable-next-line no-prototype-builtins */
       if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) return 0;
       keyA = a[key].toLowerCase();
       keyB = b[key].toLowerCase();

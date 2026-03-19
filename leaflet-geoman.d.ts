@@ -1084,9 +1084,9 @@ declare module 'leaflet' {
       /** Creates a copy of a draw Control. Returns the drawInstance and the control. */
       copyDrawControl(
         copyInstance: string,
-        options: CustomControlOptions
+        options: CustomControlOptions | string
       ): {
-        drawInstance: Draw;
+        drawInstance: DrawShape;
         control: L.Control;
       };
 
@@ -1243,6 +1243,12 @@ declare module 'leaflet' {
 
       /** Changing the cut behavior to use a circle instead of a polygon. Default: false ⭐ */
       cutAsCircle?: boolean;
+
+      /** Enable exiting active modes (draw, edit, drag, rotate, remove, cut) by pressing the Escape key. Default: false */
+      exitModeOnEscape?: boolean;
+
+      /** Enable finishing drawing shapes (Line, Polygon, Cut) by pressing the Enter key when enough vertices are placed. Default: false */
+      finishOnEnter?: boolean;
     }
 
     interface PMDrawMap {
@@ -1626,6 +1632,10 @@ declare module 'leaflet' {
       /** Returns the active shape. */
       getActiveShape(): SUPPORTED_SHAPES;
 
+      /** Creates a new draw instance for custom controls. */
+      createNewDrawInstance(name: string, jsClass: string): DrawShape;
+
+      /** Access shape-specific draw instances (e.g., Draw.Line, Draw.Marker) */
       [key: string]: DrawShape | ((...args: any[]) => any);
     }
 
@@ -1641,6 +1651,15 @@ declare module 'leaflet' {
 
       /** Get options */
       getOptions(): DrawModeOptions;
+
+      /** The current options for this draw shape */
+      options?: DrawModeOptions;
+
+      /** The toolbar button name associated with this draw instance */
+      toolbarButtonName?: string;
+
+      /** The shape identifier */
+      _shape?: string;
     }
 
     interface LassoDraw {
@@ -1847,6 +1866,9 @@ declare module 'leaflet' {
     interface DrawModeOptions extends SnappingOptions {
       /** Require the last point of a shape to be snapped. (default: false). */
       requireSnapToFinish?: boolean;
+
+      /** Enable finishing drawing shapes (Line, Polygon, Cut) by pressing the Enter key when enough vertices are placed. (default: false) */
+      finishOnEnter?: boolean;
 
       /** Show helpful tooltips for your user (default:true). */
       tooltips?: boolean;

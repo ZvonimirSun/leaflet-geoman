@@ -41,8 +41,32 @@ h3 {
   padding: 30px;
   max-width: 1000px;
   margin: auto;
+  /* Make room for DevPanel on the right */
+  margin-right: 380px;
+  transition: margin-right 0.2s ease;
+}
+
+/* When DevPanel is collapsed, use more space */
+body.devpanel-collapsed .wrapper {
+  margin-right: 60px;
 }
 
 .map {
   height: 500px;
+}
+
+/* Responsive adjustments for DevPanel */
+@media (max-width: 1200px) {
+  .wrapper {
+    margin-right: auto;
+    max-width: none;
+    padding-right: 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  .wrapper {
+    padding-right: 30px;
+    margin-bottom: 50vh;
+  }
 }
