@@ -9,7 +9,10 @@
     "finishRect": "單擊完成",
     "startCircle": "單擊放置圓心",
     "finishCircle": "單擊完成圓形",
-    "placeCircleMarker": "點擊放置圓形標記"
+    "placeCircleMarker": "點擊放置圓形標記",
+    "placeText": "點擊放置文字",
+    "selectFirstLayerFor": "選擇第一個用於{action}的圖層",
+    "selectSecondLayerFor": "選擇第二個用於{action}的圖層"
   },
   "actions": {
     "finish": "完成",
@@ -29,6 +32,23 @@
     "drawCircleMarkerButton": "畫圓圈標記",
     "snappingButton": "將拖動的標記對齊到其他圖層和頂點",
     "pinningButton": "將共享頂點固定在一起",
-    "rotateButton": "旋轉圖形"
+    "rotateButton": "旋轉圖形",
+    "drawTextButton": "繪製文字",
+    "scaleButton": "縮放圖層",
+    "autoTracingButton": "自動描線",
+    "snapGuidesButton": "顯示對齊參考線",
+    "unionButton": "合併圖層",
+    "differenceButton": "減去圖層"
+  },
+  "measurements": {
+    "totalLength": "長度",
+    "segmentLength": "線段長度",
+    "area": "面積",
+    "radius": "半徑",
+    "perimeter": "周長",
+    "height": "高度",
+    "width": "寬度",
+    "coordinates": "位置",
+    "coordinatesMarker": "標記位置"
   }
 }
