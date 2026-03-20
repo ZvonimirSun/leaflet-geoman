@@ -1276,9 +1276,9 @@ declare module 'leaflet' {
       /** Customize the style of the drawn layer. Only for L.Path layers. Shapes can be excluded with a ignoreShapes array or merged with the current style with merge: true in  optionsModifier. */
       setPathOptions(
         options: L.PathOptions | L.CircleMarkerOptions,
-        optionsModifier?: { 
+        optionsModifier?: {
           ignoreShapes?: SUPPORTED_SHAPES[],
-          merge?: boolean 
+          merge?: boolean
         }
       ): void;
 
@@ -1936,6 +1936,9 @@ declare module 'leaflet' {
 
       /** Angel of rectangle. */
       rectangleAngle?: number;
+
+      /** Draw rectangle with drag. */
+      rectangleDrag?: boolean;
 
       /** Cut-Mode: Only the passed layers can be cut. Cutted layers are removed from the Array until no layers are left anymore and cutting is working on all layers again. (Default: []) */
       layersToCut?: L.Layer[];
