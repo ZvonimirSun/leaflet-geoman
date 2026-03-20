@@ -11,6 +11,7 @@ Draw.Rectangle = Draw.extend({
     // TODO: Think about if these options could be passed globally for all
     // instances of L.PM.Draw. So a dev could set drawing style one time as some kind of config
     L.Util.setOptions(this, options);
+    this._isDragMode = this.options.dragMode === true;
 
     // enable draw mode
     this._enabled = true;
@@ -59,8 +60,11 @@ Draw.Rectangle = Draw.extend({
 
     // add tooltip to hintmarker
     if (this.options.tooltips) {
+      const tooltipText = this._isDragMode
+        ? getTranslation('按住鼠标移动开始绘制')
+        : getTranslation('tooltips.firstVertex');
       this._hintMarker
-        .bindTooltip(getTranslation('tooltips.firstVertex'), {
+        .bindTooltip(tooltipText, {
           permanent: true,
           offset: L.point(0, 10),
           direction: 'bottom',
@@ -91,8 +95,13 @@ Draw.Rectangle = Draw.extend({
 
     // change map cursor
     this._map.getContainer().classList.add('geoman-draw-cursor');
-
     // create a polygon-point on click
+    if (this._isDragMode) {
+      this._map.on('mousedown', this._placeStartingMarkers, this);
+      // // sync hint marker with mouse cursor
+      // this._map.on('mousemove', this.__syncHintMarker, this);
+      // this._map.on('click', this._placeStartingMarkers, this);
+    }
     this._map.on('click', this._placeStartingMarkers, this);
 
     // sync hint marker with mouse cursor
@@ -126,7 +135,9 @@ Draw.Rectangle = Draw.extend({
     this._map.off('click', this._finishShape, this);
     this._map.off('click', this._placeStartingMarkers, this);
     this._map.off('mousemove', this._syncHintMarker, this);
-
+    this._map.off('mousedown', this._placeStartingMarkers, this);
+    this._map.off('mouseup', this._finishShape, this);
+    this._map.dragging.enable();
     // remove helping layers
     this._map.removeLayer(this._layerGroup);
 
@@ -152,6 +163,19 @@ Draw.Rectangle = Draw.extend({
     }
   },
   _placeStartingMarkers(e) {
+    // 阻止单击相关事件
+    if (this._isDragMode && e.type === 'click') {
+      this._map.off('click', this._placeStartingMarkers, this);
+      this._map.off('mousemove', this._syncHintMarker, this);
+      this._map.off('mouseup', this._finishShape, this);
+      this._map.pm.Toolbar.toggleButton(this.toolbarButtonName, false);
+      this._map.removeLayer(this._layerGroup);
+      return;
+    }
+    if (this._isDragMode && e.type === 'mousedown') {
+      console.log('触发地图禁用');
+      this._map.dragging.disable();
+    }
     // assign the coordinate of the click to the hintMarker, that's necessary for
     // mobile where the marker can't follow a cursor
     if (!this._hintMarker._snapped) {
@@ -172,12 +196,17 @@ Draw.Rectangle = Draw.extend({
         styleMarker.setLatLng(latlng);
       });
     }
-
-    this._map.off('click', this._placeStartingMarkers, this);
-    this._map.on('click', this._finishShape, this);
-
-    // change tooltip text
-    this._hintMarker.setTooltipContent(getTranslation('tooltips.finishRect'));
+    if (this._isDragMode) {
+      this._map.off('mousedown', this._placeStartingMarkers, this);
+      this._map.on('mouseup', this._finishShape, this);
+      // 更新 tooltip
+      this._hintMarker.setTooltipContent(getTranslation('松开鼠标结束绘制'));
+    } else {
+      this._map.off('click', this._placeStartingMarkers, this);
+      this._map.on('click', this._finishShape, this);
+      // change tooltip text
+      this._hintMarker.setTooltipContent(getTranslation('tooltips.finishRect'));
+    }
 
     this._setRectangleOrigin();
   },
@@ -255,6 +284,7 @@ Draw.Rectangle = Draw.extend({
     );
   },
   _finishShape(e) {
+    this._map.dragging.enable();
     // assign the coordinate of the click to the hintMarker, that's necessary for
     // mobile where the marker can't follow a cursor
     if (e?.latlng && !this._hintMarker._snapped) {
