@@ -50,7 +50,7 @@ L.PM = L.PM || {
   Edit,
   Utils,
   Matrix,
-  activeLang: 'en',
+  activeLang: 'zh',
   optIn: false,
   initialize(options) {
     this.addInitHooks(options);

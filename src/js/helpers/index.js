@@ -3,8 +3,8 @@ import translations from '../../assets/translations';
 
 export function getTranslation(path) {
   const lang = L.PM.activeLang;
-  // if translation is not found, fallback to english
-  return get(translations[lang], path) || get(translations.en, path) || path;
+  // if translation is not found, fallback to chinese
+  return get(translations[lang], path) || get(translations.zh, path) || path;
 }
 
 export function hasFinePointer() {
