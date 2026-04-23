@@ -12,15 +12,18 @@
   Supports Markers, CircleMarkers, Polylines, Polygons, Circles, Rectangles, ImageOverlays, LayerGroups, GeoJSON, MultiLineStrings and MultiPolygons  
 </p>  
 <p align="center">  
-  <a href="https://badge.fury.io/js/%40geoman-io%2Fleaflet-geoman-free">  
-    <img src="https://badge.fury.io/js/%40geoman-io%2Fleaflet-geoman-free.svg" alt="npm version" height="18">  
+  <a href="https://badge.fury.io/js/%40zvonimirsun%2Fleaflet-geoman">  
+    <img src="https://badge.fury.io/js/%40zvonimirsun%2Fleaflet-geoman.svg" alt="npm version" height="18">  
   </a>  
   <a href="#">  
     <img src="https://github.com/geoman-io/leaflet-geoman/workflows/Tests/badge.svg" alt="" />  
   </a>
-  <a href="https://www.npmjs.com/package/@geoman-io/leaflet-geoman-free">  
-    <img src="https://img.shields.io/npm/dt/@geoman-io/leaflet-geoman-free.svg" alt="NPM Downloads" />  
-  </a>  
+  <a href="https://www.npmjs.com/package/@zvonimirsun/leaflet-geoman">  
+    <img src="https://img.shields.io/npm/dt/@zvonimirsun/leaflet-geoman.svg" alt="NPM Downloads" />  
+  </a>
+  <a href="https://deepwiki.com/ZvonimirSun/leaflet-geoman">  
+    <img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki" />  
+  </a>
 </p>
 
 <p align="center">
