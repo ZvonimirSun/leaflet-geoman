@@ -4,7 +4,7 @@
   </a>  
 </p>  
 <h1 align="center">  
-  Leaflet-Geoman  
+  Leaflet-Geoman(ZvonimirSun)
 </h1>  
 <p align="center">  
   <strong>Leaflet Plugin For Creating And Editing Geometry Layers</strong><br>  
